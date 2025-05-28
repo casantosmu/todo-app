@@ -3,7 +3,7 @@ import { useState } from "react";
 import Container from "./components/Container";
 import FloatingButton from "./components/FloatingButton";
 import Modal from "./components/Modal";
-import TodoAddInput from "./modules/todo/TodoAddInput";
+import TodoAdd from "./modules/todo/TodoAdd";
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,11 +18,11 @@ export default function App() {
   return (
     <Container>
       <FloatingButton onClick={handleOpenModal}>
-        <Plus className="h-6 w-6" />
+        <Plus className="h-6 w-6" strokeWidth={1.5} />
       </FloatingButton>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <TodoAddInput />
+        <TodoAdd />
       </Modal>
     </Container>
   );
