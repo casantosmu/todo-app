@@ -3,7 +3,7 @@ import { useState } from "react";
 import Container from "./components/Container";
 import FloatingButton from "./components/FloatingButton";
 import Modal from "./components/Modal";
-import TodoAdd from "./modules/todo/TodoAdd";
+import TodoAdd from "./modules/todos/TodoAdd";
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
