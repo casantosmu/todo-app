@@ -3,9 +3,20 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../components/Button";
 import InputText from "../../components/InputText";
+import { useTodoCreate } from "./api";
 
 export default function TodoAdd() {
   const { t } = useTranslation();
+
+  const todoCreateMutation = useTodoCreate({
+    onSuccess(data) {
+      console.log("success", data.id);
+    },
+    onError() {
+      console.error("error");
+    },
+  });
+
   const [taskName, setTaskName] = useState("");
 
   const handleTaskNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -14,7 +25,7 @@ export default function TodoAdd() {
 
   const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("SUBMIT!! Task: ", taskName);
+    todoCreateMutation.mutate({ name: taskName });
   };
 
   const isButtonDisabled = taskName.trim() === "";
