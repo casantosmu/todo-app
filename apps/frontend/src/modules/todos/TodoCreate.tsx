@@ -1,45 +1,47 @@
 import { Plus } from "lucide-react";
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Button from "../../components/Button";
 import InputText from "../../components/InputText";
 import { useTodoCreate } from "./api";
+import type { Todo } from "./types";
 
-export default function TodoAdd() {
+interface FormInput {
+  name: string;
+}
+
+interface TodoCreateProps {
+  onCreate: (todo: Todo) => void;
+}
+
+export default function TodoCreate({ onCreate }: TodoCreateProps) {
   const { t } = useTranslation();
 
   const todoCreateMutation = useTodoCreate({
-    onSuccess(data) {
-      console.log("success", data.id);
-    },
+    onSuccess: onCreate,
     onError() {
       console.error("error");
     },
   });
 
-  const [taskName, setTaskName] = useState("");
+  const { register, handleSubmit, watch } = useForm<FormInput>();
 
-  const handleTaskNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setTaskName(event.target.value);
+  const onSubmit = (data: FormInput) => {
+    todoCreateMutation.mutate(data);
   };
 
-  const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    todoCreateMutation.mutate({ name: taskName });
-  };
-
-  const isButtonDisabled = taskName.trim() === "";
+  const isButtonDisabled = watch("name", "").trim() === "";
 
   return (
-    <form onSubmit={handleOnSubmit} className="space-y-4">
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <InputText
         id="task-name"
         label={t("taskLabel")}
         placeholder={t("taskPlaceholder")}
         autoFocus
-        value={taskName}
-        onChange={handleTaskNameChange}
         autoComplete="off"
+        {...register("name")}
       />
 
       <div className="flex justify-end">

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Container from "./components/Container";
 import FloatingButton from "./components/FloatingButton";
 import Modal from "./components/Modal";
-import TodoAdd from "./modules/todos/TodoAdd";
+import TodoCreate from "./modules/todos/TodoCreate";
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,7 +22,7 @@ export default function App() {
       </FloatingButton>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <TodoAdd />
+        <TodoCreate onCreate={console.log} />
       </Modal>
     </Container>
   );
