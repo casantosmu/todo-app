@@ -1,9 +1,17 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
+import Modal from "react-modal";
 import App from "./App.tsx";
+import "./index.css";
+import "./lib/i18n";
 
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+if (!root) {
+  throw new Error("#root element not found");
+}
+
+Modal.setAppElement(root);
+createRoot(root).render(
   <StrictMode>
     <App />
   </StrictMode>,
