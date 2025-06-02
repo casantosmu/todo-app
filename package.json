@@ -11,10 +11,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "events": "^3.3.0",
     "i18next": "^25.2.0",
     "i18next-browser-languagedetector": "^8.1.0",
     "i18next-http-backend": "^3.0.2",
     "lucide-react": "^0.511.0",
+    "pouchdb": "^9.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.4",
@@ -24,6 +26,7 @@
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@tailwindcss/vite": "^4.1.7",
+    "@types/pouchdb": "^6.4.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@types/react-modal": "^3.16.3",
