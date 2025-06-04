@@ -4,6 +4,7 @@ import Container from "./components/Container";
 import FloatingButton from "./components/FloatingButton";
 import Modal from "./components/Modal";
 import TaskCreate from "./modules/task/components/TaskCreate";
+import TaskList from "./modules/task/components/TaskList";
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +18,8 @@ export default function App() {
 
   return (
     <Container>
+      <TaskList />
+
       <FloatingButton onClick={handleOpenModal}>
         <Plus className="h-6 w-6" strokeWidth={1.5} />
       </FloatingButton>

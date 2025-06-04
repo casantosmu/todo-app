@@ -3,8 +3,8 @@ import {
   useQueryClient,
   type UseMutationOptions,
 } from "@tanstack/react-query";
-import { v7 as uuid } from "uuid";
 import db from "../../../lib/db";
+import shortId from "../../../lib/shortId";
 import type Task from "./../types/Task";
 import type TaskCreate from "./../types/TaskCreate";
 import { getTaskListKey } from "./_keys";
@@ -17,11 +17,11 @@ export default function useTaskCreate(
   return useMutation({
     ...options,
     async mutationFn(body) {
-      const task = {
-        ...body,
-        _id: uuid(),
-        type: "task",
+      const task: Task = {
+        _id: `task_${shortId()}`,
+        title: body.title,
       };
+
       await db.put(task);
       return task;
     },
