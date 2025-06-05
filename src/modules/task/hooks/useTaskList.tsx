@@ -10,7 +10,9 @@ const useTaskList = (options?: UseQueryOptions<Task[]>) => {
     async queryFn() {
       const result = await db.allDocs<Task>({
         include_docs: true,
-        startkey: "task",
+        descending: true,
+        startkey: "task\ufff0",
+        endkey: "task",
       });
 
       return result.rows.map((row) => row.doc).filter((doc) => !!doc);
