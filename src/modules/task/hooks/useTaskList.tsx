@@ -3,16 +3,27 @@ import db from "../../../lib/db";
 import type Task from "../types/Task";
 import { getTaskListKey } from "./_keys";
 
-const useTaskList = (options?: UseQueryOptions<Task[]>) => {
+interface UseTaskListParams {
+  descending?: boolean;
+}
+
+interface UseTaskListProps {
+  params?: UseTaskListParams;
+  options?: UseQueryOptions<Task[]>;
+}
+
+const useTaskList = ({ params, options }: UseTaskListProps = {}) => {
+  const isDescending = params?.descending ?? true;
+
   return useQuery({
     ...options,
-    queryKey: getTaskListKey(),
+    queryKey: getTaskListKey(params),
     async queryFn() {
       const result = await db.allDocs<Task>({
         include_docs: true,
-        descending: true,
-        startkey: "task\ufff0",
-        endkey: "task",
+        descending: isDescending,
+        startkey: isDescending ? "task\ufff0" : "task",
+        endkey: isDescending ? "task" : "task\ufff0",
       });
 
       return result.rows.map((row) => row.doc).filter((doc) => !!doc);
