@@ -17,10 +17,13 @@ interface TaskCreateProps {
 export default function TaskCreate({ onCreate }: TaskCreateProps) {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, watch } = useForm<FormInput>();
+  const { register, handleSubmit, watch, reset } = useForm<FormInput>();
 
   const taskCreateMutation = useTaskCreate({
-    onSuccess: onCreate,
+    onSuccess(data) {
+      onCreate(data);
+      reset();
+    },
     onError: console.error,
   });
 
