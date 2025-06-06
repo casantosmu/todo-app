@@ -1,1 +1,1 @@
-export const getTaskListKey = (params: unknown) => ["task", "list", params];
+export const getTaskListKey = (params?: unknown) => ["task", "list", params];

@@ -20,6 +20,7 @@ export default function useTaskCreate(
       const task: Task = {
         _id: `task_${shortId()}`,
         title: body.title,
+        completedAt: null,
       };
 
       await db.put(task);
