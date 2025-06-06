@@ -1,3 +1,4 @@
+import CheckboxButton from "../../../components/CheckboxButton";
 import useTaskList from "../hooks/useTaskList";
 
 export default function TaskList() {
@@ -17,9 +18,10 @@ export default function TaskList() {
       {taskList.map((task) => (
         <li
           key={task._id}
-          className="text-gray-800 w-full p-4 bg-white border border-gray-200 rounded-lg"
+          className="flex items-center text-gray-800 w-full p-4 bg-white border border-gray-200 rounded-lg"
         >
-          {task.title}
+          <CheckboxButton isChecked={!!task.completedAt} />
+          <span className="pl-2">{task.title}</span>
         </li>
       ))}
     </ul>
