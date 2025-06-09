@@ -1,7 +1,8 @@
 import PouchDB from "pouchdb";
 import FindPouchDB from "pouchdb-find";
+import type Task from "../modules/task/types/Task";
 
-const db = new PouchDB("mycentral-db");
+const db = new PouchDB<Task>("mycentral-db");
 PouchDB.plugin(FindPouchDB);
 
 db.sync(new PouchDB("http://admin:password@localhost:5984/mycentral-db"), {
@@ -24,6 +25,20 @@ db.sync(new PouchDB("http://admin:password@localhost:5984/mycentral-db"), {
     console.log("DB SYNC ERROR", error);
   })
   .catch(console.error);
+
+if (import.meta.env.DEV) {
+  const { indexes } = await db.getIndexes();
+
+  await Promise.all(
+    indexes
+      .filter((index): index is PouchDB.Find.Index & { ddoc: string } => {
+        return typeof index.ddoc === "string";
+      })
+      .map((index) => {
+        return db.deleteIndex(index);
+      })
+  );
+}
 
 await db.createIndex({
   index: { fields: ["createdAt", "type"] },
