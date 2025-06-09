@@ -1,6 +1,8 @@
 import PouchDB from "pouchdb";
+import FindPouchDB from "pouchdb-find";
 
 const db = new PouchDB("mycentral-db");
+PouchDB.plugin(FindPouchDB);
 
 db.sync(new PouchDB("http://admin:password@localhost:5984/mycentral-db"), {
   live: true,
