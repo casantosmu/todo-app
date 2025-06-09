@@ -25,4 +25,8 @@ db.sync(new PouchDB("http://admin:password@localhost:5984/mycentral-db"), {
   })
   .catch(console.error);
 
+await db.createIndex({
+  index: { fields: ["createdAt", "type"] },
+});
+
 export default db;

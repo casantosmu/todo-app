@@ -19,7 +19,9 @@ export default function useTaskCreate(
     async mutationFn(body) {
       const task: Task = {
         _id: shortId(),
+        type: "task",
         title: body.title,
+        createdAt: new Date(),
         completedAt: null,
       };
 

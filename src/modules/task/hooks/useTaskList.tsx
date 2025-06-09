@@ -13,20 +13,23 @@ interface UseTaskListProps {
 }
 
 const useTaskList = ({ params, options }: UseTaskListProps = {}) => {
-  const isDescending = params?.descending ?? true;
-
   return useQuery({
     ...options,
     queryKey: getTaskListKey(params),
     async queryFn() {
-      const result = await db.allDocs<Task>({
-        include_docs: true,
-        descending: isDescending,
-        startkey: isDescending ? "task\ufff0" : "task",
-        endkey: isDescending ? "task" : "task\ufff0",
-      });
+      const result = (await db.find({
+        selector: {
+          type: "task",
+          createdAt: { $gt: null },
+        },
+        sort: [{ createdAt: "desc" }],
+      })) as PouchDB.Find.FindResponse<Task>;
 
-      return result.rows.map((row) => row.doc).filter((doc) => !!doc);
+      return result.docs.map((doc) => ({
+        ...doc,
+        createdAt: new Date(doc.createdAt),
+        completedAt: doc.completedAt ? new Date(doc.completedAt) : null,
+      }));
     },
   });
 };
