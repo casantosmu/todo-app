@@ -4,26 +4,31 @@ import type Task from "../types/Task";
 import { getTaskListKey } from "./_keys";
 
 interface UseTaskListParams {
-  descending?: boolean;
+  status: "pending" | "completed";
 }
 
 interface UseTaskListProps {
-  params?: UseTaskListParams;
+  params: UseTaskListParams;
   options?: UseQueryOptions<Task[]>;
 }
 
-const useTaskList = ({ params, options }: UseTaskListProps = {}) => {
+const useTaskList = ({ params, options }: UseTaskListProps) => {
   return useQuery({
     ...options,
     queryKey: getTaskListKey(params),
     async queryFn() {
-      const result = (await db.find({
+      const result = await db.find({
         selector: {
           type: "task",
           createdAt: { $gt: null },
+          completedAt:
+            params.status === "pending" ? { $eq: null } : { $gt: null },
         },
-        sort: [{ createdAt: "desc" }],
-      })) as PouchDB.Find.FindResponse<Task>;
+        sort:
+          params.status === "pending"
+            ? [{ createdAt: "desc" }]
+            : [{ completedAt: "desc" }],
+      });
 
       return result.docs.map((doc) => ({
         ...doc,

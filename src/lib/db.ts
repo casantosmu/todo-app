@@ -40,8 +40,13 @@ if (import.meta.env.DEV) {
   );
 }
 
-await db.createIndex({
-  index: { fields: ["createdAt", "type"] },
-});
+await Promise.all([
+  db.createIndex({
+    index: { fields: ["createdAt", "type"] },
+  }),
+  db.createIndex({
+    index: { fields: ["completedAt", "type"] },
+  }),
+]);
 
 export default db;

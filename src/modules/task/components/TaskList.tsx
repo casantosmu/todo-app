@@ -1,29 +1,38 @@
-import CheckboxButton from "../../../components/CheckboxButton";
+import { useTranslation } from "react-i18next";
 import useTaskList from "../hooks/useTaskList";
+import TaskSection from "./TaskSection";
 
 export default function TaskList() {
-  const taskListQuery = useTaskList();
+  const { t } = useTranslation();
 
-  if (taskListQuery.isPending) {
-    return "Loading...";
-  }
-  if (taskListQuery.isError) {
-    return "Error...";
-  }
+  const {
+    data: pendingTasks,
+    isLoading: isLoadingPending,
+    isError: isErrorPending,
+  } = useTaskList({ params: { status: "pending" } });
 
-  const taskList = taskListQuery.data;
+  const {
+    data: completedTasks,
+    isLoading: isLoadingCompleted,
+    isError: isErrorCompleted,
+  } = useTaskList({ params: { status: "completed" } });
 
   return (
-    <ul>
-      {taskList.map((task) => (
-        <li
-          key={task._id}
-          className="flex items-center text-gray-800 w-full p-4 bg-white border border-gray-200 rounded-lg"
-        >
-          <CheckboxButton isChecked={!!task.completedAt} />
-          <span className="pl-2">{task.title}</span>
-        </li>
-      ))}
-    </ul>
+    <div className="space-y-8">
+      <TaskSection
+        title={t("tasksTitle")}
+        tasks={pendingTasks}
+        isLoading={isLoadingPending}
+        isError={isErrorPending}
+      />
+
+      <TaskSection
+        title={t("completedTitle")}
+        tasks={completedTasks}
+        isLoading={isLoadingCompleted}
+        isError={isErrorCompleted}
+        isCompletedList={true}
+      />
+    </div>
   );
 }
