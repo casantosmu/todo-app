@@ -4,5 +4,7 @@
 
   "taskLabel": "Nova Tasca",
   "taskPlaceholder": "Què has de fer?",
-  "addTaskButton": "Afegeix"
+  "addTaskButton": "Afegeix",
+
+  "addNewTask": "Afegir nova tasca"
 }

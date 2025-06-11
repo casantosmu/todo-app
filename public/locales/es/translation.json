@@ -4,5 +4,7 @@
 
   "taskLabel": "Nueva Tarea",
   "taskPlaceholder": "¿Qué necesitas hacer?",
-  "addTaskButton": "Añadir"
+  "addTaskButton": "Añadir",
+
+  "addNewTask": "Añadir nueva tarea"
 }

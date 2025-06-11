@@ -4,5 +4,7 @@
 
   "taskLabel": "New Task",
   "taskPlaceholder": "What do you need to do?",
-  "addTaskButton": "Add"
+  "addTaskButton": "Add",
+
+  "addNewTask": "Add new task"
 }
