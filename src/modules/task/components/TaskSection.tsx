@@ -4,6 +4,7 @@ import type Task from "../types/Task";
 interface TaskSectionProps {
   title: string;
   tasks: Task[] | undefined;
+  onUpdateTask: (task: Task) => void;
   isLoading: boolean;
   isError: boolean;
   isCompletedList?: boolean;
@@ -12,6 +13,7 @@ interface TaskSectionProps {
 export default function TaskSection({
   title,
   tasks,
+  onUpdateTask,
   isLoading,
   isError,
   isCompletedList = false,
@@ -33,7 +35,19 @@ export default function TaskSection({
             key={task._id}
             className="flex items-center w-full p-4 bg-white border border-gray-200 rounded-lg"
           >
-            <CheckboxButton isChecked={isCompletedList} />
+            <CheckboxButton
+              isChecked={isCompletedList}
+              onClick={() => {
+                const toggled: Task = {
+                  ...task,
+                  completedAt: isCompletedList ? null : new Date(),
+                };
+                onUpdateTask(toggled);
+              }}
+              //  aria-label={`Mark "${task.title}" as ${
+              //   isCompletedList ? "pending" : "completed"
+              // }`}
+            />
             <span
               className={`pl-3 ${
                 isCompletedList ? "text-gray-500 line-through" : "text-gray-800"

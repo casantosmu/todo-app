@@ -1,11 +1,16 @@
 import { Check } from "lucide-react";
+import type { MouseEventHandler } from "react";
 import cn from "../lib/cn";
 
 interface CheckboxButtonProps {
   isChecked: boolean;
+  onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
-export default function CheckboxButton({ isChecked }: CheckboxButtonProps) {
+export default function CheckboxButton({
+  isChecked,
+  onClick,
+}: CheckboxButtonProps) {
   return (
     <button
       type="button"
@@ -15,6 +20,7 @@ export default function CheckboxButton({ isChecked }: CheckboxButtonProps) {
           ? "border-gray-800 bg-gray-800 hover:bg-gray-700"
           : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
       )}
+      onClick={onClick}
     >
       <Check
         className={cn(
