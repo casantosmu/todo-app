@@ -11,7 +11,7 @@ const test = testConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: "./tests/setup.js",
+    setupFiles: "./tests/setup.ts",
   },
 });
 
