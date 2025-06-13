@@ -1,20 +1,23 @@
 import i18n from "i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import HttpApi from "i18next-http-backend";
 import { initReactI18next } from "react-i18next";
+import ca from "../i18n/ca/translation.json";
+import en from "../i18n/en/translation.json";
+import es from "../i18n/es/translation.json";
+import config from "./config";
 
 i18n
-  .use(HttpApi)
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    supportedLngs: ["en", "es", "ca"],
+    lng: "en",
     fallbackLng: "en",
-    debug: true,
+    debug: config.env.isDev,
+    resources: {
+      en: { translation: en },
+      ca: { translation: ca },
+      es: { translation: es },
+    },
     interpolation: {
       escapeValue: false,
     },
   })
   .catch(console.error);
-
-export default i18n;
