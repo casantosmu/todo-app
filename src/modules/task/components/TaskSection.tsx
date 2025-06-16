@@ -18,6 +18,10 @@ export default function TaskSection({
   isError,
   isCompletedList = false,
 }: TaskSectionProps) {
+  const headingID = isCompletedList
+    ? "completed-tasks-heading"
+    : "pending-tasks-heading";
+
   const renderContent = () => {
     if (isLoading) {
       return <p className="text-gray-500">Loading...</p>;
@@ -62,9 +66,11 @@ export default function TaskSection({
   };
 
   return (
-    <>
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">{title}</h2>
+    <section aria-labelledby={headingID}>
+      <h2 id={headingID} className="text-xl font-semibold text-gray-800 mb-4">
+        {title}
+      </h2>
       {renderContent()}
-    </>
+    </section>
   );
 }
