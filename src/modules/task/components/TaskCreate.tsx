@@ -4,24 +4,18 @@ import { useTranslation } from "react-i18next";
 import Button from "../../../components/Button";
 import InputText from "../../../components/InputText";
 import useTaskCreate from "../hooks/useTaskCreate";
-import type Task from "../types/Task";
 
 interface FormInput {
   title: string;
 }
 
-interface TaskCreateProps {
-  onCreate: (task: Task) => void;
-}
-
-export default function TaskCreate({ onCreate }: TaskCreateProps) {
+export default function TaskCreate() {
   const { t } = useTranslation();
 
   const { register, handleSubmit, watch, reset } = useForm<FormInput>();
 
   const taskCreateMutation = useTaskCreate({
-    onSuccess(data) {
-      onCreate(data);
+    onSuccess() {
       reset();
     },
     onError: console.error,

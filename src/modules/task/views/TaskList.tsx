@@ -70,7 +70,7 @@ export default function TaskList() {
         <h2 id="addNewTaskTitle" className="sr-only">
           {t("addNewTask")}
         </h2>
-        <TaskCreate onCreate={console.log} />
+        <TaskCreate />
       </Modal>
     </Container>
   );
