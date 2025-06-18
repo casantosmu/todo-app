@@ -28,6 +28,7 @@ describe("TaskList", () => {
 
     // Submit the new task.
     await user.click(submitButton);
+    await user.keyboard("{Escape}");
 
     // Find the new task in the "pending" list.
     const pendingSection = screen.getByRole("region", { name: /tasks/i });
