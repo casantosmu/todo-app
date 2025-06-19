@@ -6,5 +6,7 @@
   "taskPlaceholder": "Què has de fer?",
   "addTaskButton": "Afegeix",
 
-  "addNewTask": "Afegir nova tasca"
+  "addNewTask": "Afegir nova tasca",
+
+  "delete": "Eliminar"
 }

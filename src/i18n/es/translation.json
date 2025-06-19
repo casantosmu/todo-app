@@ -6,5 +6,7 @@
   "taskPlaceholder": "¿Qué necesitas hacer?",
   "addTaskButton": "Añadir",
 
-  "addNewTask": "Añadir nueva tarea"
+  "addNewTask": "Añadir nueva tarea",
+
+  "delete": "Eliminar"
 }

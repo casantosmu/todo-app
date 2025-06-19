@@ -6,5 +6,7 @@
   "taskPlaceholder": "What do you need to do?",
   "addTaskButton": "Add",
 
-  "addNewTask": "Add new task"
+  "addNewTask": "Add new task",
+
+  "delete": "Delete"
 }
