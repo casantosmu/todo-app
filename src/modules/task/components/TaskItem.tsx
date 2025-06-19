@@ -1,0 +1,64 @@
+import * as ContextMenu from "@radix-ui/react-context-menu";
+import { Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import CheckboxButton from "../../../components/CheckboxButton";
+import useTaskUpdate from "../hooks/useTaskUpdate";
+import type Task from "../types/Task";
+
+interface TaskItemProps {
+  task: Task;
+}
+
+export default function TaskItem({ task }: TaskItemProps) {
+  const { t } = useTranslation();
+
+  const taskUpdateMutation = useTaskUpdate({
+    onError: console.error,
+  });
+
+  const handleToggleTask = (task: Task) => () => {
+    const toggled: Task = {
+      ...task,
+      completedAt: task.completedAt ? null : new Date(),
+    };
+    taskUpdateMutation.mutate(toggled);
+  };
+
+  return (
+    <ContextMenu.Root>
+      <ContextMenu.Trigger asChild>
+        {/*  cursor-default select-none focus:outline-none focus:ring-2 focus:ring-gray-500 */}
+        <li className="flex items-center w-full p-4 bg-white border border-gray-200 rounded-lg">
+          <CheckboxButton
+            isChecked={!!task.completedAt}
+            onClick={handleToggleTask(task)}
+            //  aria-label={`Mark "${task.title}" as ${
+            //   isCompletedList ? "pending" : "completed"
+            // }`}
+          />
+          <span
+            className={`pl-3 ${
+              task.completedAt ? "text-gray-500 line-through" : "text-gray-800"
+            }`}
+          >
+            {task.title}
+          </span>
+        </li>
+      </ContextMenu.Trigger>
+
+      <ContextMenu.Portal>
+        <ContextMenu.Content className="w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+          <ContextMenu.Item
+            className="flex items-center text-red-500 px-4 py-2 text-sm cursor-pointer select-none data-[highlighted]:bg-red-50 data-[highlighted]:outline-none"
+            onSelect={() => {
+              console.log("delete", task);
+            }}
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            {t("delete")}
+          </ContextMenu.Item>
+        </ContextMenu.Content>
+      </ContextMenu.Portal>
+    </ContextMenu.Root>
+  );
+}
