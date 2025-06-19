@@ -2,6 +2,7 @@ import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import CheckboxButton from "../../../components/CheckboxButton";
+import useTaskDelete from "../hooks/useTaskDelete";
 import useTaskUpdate from "../hooks/useTaskUpdate";
 import type Task from "../types/Task";
 
@@ -16,12 +17,20 @@ export default function TaskItem({ task }: TaskItemProps) {
     onError: console.error,
   });
 
+  const taskDeleteMutation = useTaskDelete({
+    onError: console.error,
+  });
+
   const handleToggleTask = (task: Task) => () => {
     const toggled: Task = {
       ...task,
       completedAt: task.completedAt ? null : new Date(),
     };
     taskUpdateMutation.mutate(toggled);
+  };
+
+  const handleDeleteTask = () => {
+    taskDeleteMutation.mutate(task);
   };
 
   return (
@@ -50,9 +59,7 @@ export default function TaskItem({ task }: TaskItemProps) {
         <ContextMenu.Content className="w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
           <ContextMenu.Item
             className="flex items-center text-red-500 px-4 py-2 text-sm cursor-pointer select-none data-[highlighted]:bg-red-50 data-[highlighted]:outline-none"
-            onSelect={() => {
-              console.log("delete", task);
-            }}
+            onSelect={handleDeleteTask}
           >
             <Trash2 className="w-4 h-4 mr-2" />
             {t("delete")}
