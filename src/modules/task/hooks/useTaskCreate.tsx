@@ -17,7 +17,7 @@ export default function useTaskCreate(
   return useMutation({
     ...options,
     async mutationFn(body) {
-      const task: Task = {
+      const task: Omit<Task, "_rev"> = {
         _id: shortId("task"),
         type: "task",
         title: body.title,

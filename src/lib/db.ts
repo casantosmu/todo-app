@@ -3,7 +3,7 @@ import FindPouchDB from "pouchdb-find";
 import type Task from "../modules/task/types/Task";
 import config from "./config";
 
-const db = new PouchDB<Task>("mycentral-db");
+const db = new PouchDB<Task | Omit<Task, "_rev">>("mycentral-db");
 PouchDB.plugin(FindPouchDB);
 
 if (!config.env.isTest) {

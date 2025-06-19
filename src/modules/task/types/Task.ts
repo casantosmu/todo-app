@@ -4,4 +4,5 @@ export default interface Task {
   title: string;
   createdAt: Date;
   completedAt: Date | null;
+  _rev: string;
 }
