@@ -6,7 +6,7 @@ import render from "../../../../tests/render";
 import TaskList from "./TaskList";
 
 describe("TaskList", () => {
-  it("should allow a user to create a task, see it, complete it, and see it moved", async () => {
+  it("should allow a user to create a task, see it, complete it, and then delete it", async () => {
     const user = userEvent.setup();
     render(<TaskList />);
 
@@ -53,5 +53,29 @@ describe("TaskList", () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const completedTaskItem = completedTask.closest("li")!;
     expect(completedTaskItem).toBeInTheDocument();
+
+    // Right-click the completed task item to open its context menu.
+    await user.pointer({ keys: "[MouseRight]", target: completedTaskItem });
+
+    // Find and click the "delete" option in the context menu.
+    const deleteMenuItem = await screen.findByRole("menuitem", {
+      name: /delete/i,
+    });
+    await user.click(deleteMenuItem);
+
+    // Find and click the confirmation button inside a confirmation dialog.
+    const deleteModal = await screen.findByRole("dialog", {
+      name: /delete task?/i,
+    });
+    const deleteButton = within(deleteModal).getByRole("button", {
+      name: /delete/i,
+    });
+    await user.click(deleteButton);
+
+    // Wait for the task to be removed from the UI.
+    await waitFor(() => {
+      const deletedTask = screen.queryByText(taskTitle);
+      expect(deletedTask).not.toBeInTheDocument();
+    });
   });
 });
