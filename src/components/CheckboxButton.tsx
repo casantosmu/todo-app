@@ -15,7 +15,7 @@ export default function CheckboxButton({
     <button
       type="button"
       className={cn(
-        "inline-flex h-6 w-6 items-center justify-center rounded-full border-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all",
+        "inline-flex h-6 w-6 items-center justify-center rounded-full border-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all",
         isChecked
           ? "border-gray-800 bg-gray-800 hover:bg-gray-700"
           : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
