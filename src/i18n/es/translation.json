@@ -8,5 +8,9 @@
 
   "addNewTask": "Añadir nueva tarea",
 
-  "delete": "Eliminar"
+  "delete": "Eliminar",
+  "cancel": "Cancelar",
+
+  "deleteConfirmationTitle": "¿Eliminar la tarea?",
+  "deleteConfirmationMessage": "La tarea \"{{taskTitle}}\" se eliminará permanentemente."
 }

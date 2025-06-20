@@ -8,5 +8,9 @@
 
   "addNewTask": "Add new task",
 
-  "delete": "Delete"
+  "delete": "Delete",
+  "cancel": "Cancel",
+
+  "deleteConfirmationTitle": "Delete task?",
+  "deleteConfirmationMessage": "The task \"{{taskTitle}}\" will be permanently deleted."
 }

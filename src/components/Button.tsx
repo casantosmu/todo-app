@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 import cn from "../lib/cn";
 
 const baseClasses =
@@ -29,6 +29,7 @@ interface ButtonProps {
   disabled?: boolean | undefined;
   variant?: "solid" | "outline";
   color?: "primary" | "secondary" | "danger";
+  onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
 export default function Button({
@@ -37,12 +38,14 @@ export default function Button({
   type,
   variant = "solid",
   color = "primary",
+  onClick,
 }: ButtonProps) {
   return (
     <button
       type={type ?? "button"}
       disabled={disabled}
       className={cn(baseClasses, variantClasses[variant][color])}
+      onClick={onClick}
     >
       {children}
     </button>

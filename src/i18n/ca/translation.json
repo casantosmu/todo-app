@@ -8,5 +8,9 @@
 
   "addNewTask": "Afegir nova tasca",
 
-  "delete": "Eliminar"
+  "delete": "Eliminar",
+  "cancel": "Cancel·la",
+
+  "deleteConfirmationTitle": "Vols eliminar la tasca?",
+  "deleteConfirmationMessage": "La tasca \"{{taskTitle}}\" s'eliminarà permanentment."
 }
