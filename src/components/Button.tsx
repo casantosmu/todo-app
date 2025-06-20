@@ -30,6 +30,7 @@ interface ButtonProps {
   variant?: "solid" | "outline";
   color?: "primary" | "secondary" | "danger";
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+  className?: string | undefined;
 }
 
 export default function Button({
@@ -39,12 +40,13 @@ export default function Button({
   variant = "solid",
   color = "primary",
   onClick,
+  className,
 }: ButtonProps) {
   return (
     <button
       type={type ?? "button"}
       disabled={disabled}
-      className={cn(baseClasses, variantClasses[variant][color])}
+      className={cn(baseClasses, variantClasses[variant][color], className)}
       onClick={onClick}
     >
       {children}
