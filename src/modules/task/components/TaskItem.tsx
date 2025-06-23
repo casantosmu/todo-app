@@ -17,6 +17,7 @@ export default function TaskItem({ task }: TaskItemProps) {
   const { t } = useTranslation();
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
 
   const taskUpdateMutation = useTaskUpdate({
     onError: console.error,
@@ -47,19 +48,28 @@ export default function TaskItem({ task }: TaskItemProps) {
     setDeleteModalOpen(false);
   };
 
+  const openEditModal = () => {
+    // setEditedTitle(task.title);
+    setEditModalOpen(true);
+  };
+  const closeEditModal = () => {
+    setEditModalOpen(false);
+  };
+
   return (
     <>
       <ContextMenu.Root>
         <ContextMenu.Trigger asChild>
-          {/*  cursor-default select-none focus:outline-none focus:ring-2 focus:ring-gray-500 */}
-          <li className="flex items-center w-full p-4 bg-white border border-gray-200 rounded-lg">
+          <li className="relative flex items-center w-full p-4 bg-white border border-gray-200 rounded-lg">
             <CheckboxButton
               isChecked={!!task.completedAt}
               onClick={handleToggleTask}
+              className="z-1"
               //  aria-label={`Mark "${task.title}" as ${
               //   isCompletedList ? "pending" : "completed"
               // }`}
             />
+
             <span
               className={`pl-3 ${
                 task.completedAt
@@ -69,6 +79,13 @@ export default function TaskItem({ task }: TaskItemProps) {
             >
               {task.title}
             </span>
+
+            <button
+              type="button"
+              onClick={openEditModal}
+              className="absolute inset-0 bg-transparent border-none cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+              // aria-label={`Edit task: ${task.title}`}
+            />
           </li>
         </ContextMenu.Trigger>
 
@@ -107,6 +124,10 @@ export default function TaskItem({ task }: TaskItemProps) {
             {t("delete")}
           </Button>
         </div>
+      </Modal>
+
+      <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+        EDIT MODAL
       </Modal>
     </>
   );
