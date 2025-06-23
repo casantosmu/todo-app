@@ -18,8 +18,8 @@ export default function Modal({
     <ReactModal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="relative bg-white w-full max-w-md p-6 rounded-lg shadow-xl"
-      overlayClassName="fixed inset-0 bg-gray-900/50 flex items-center justify-center p-4"
+      className="z-100 relative bg-white w-full max-w-md p-6 rounded-lg shadow-xl"
+      overlayClassName="z-100 fixed inset-0 bg-gray-900/50 flex items-center justify-center p-4"
       shouldFocusAfterRender={false}
       aria={{
         labelledby: labelledby,
