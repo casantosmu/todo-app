@@ -6,12 +6,14 @@ interface CheckboxButtonProps {
   isChecked: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
   className?: string | undefined;
+  "aria-label"?: string | undefined;
 }
 
 export default function CheckboxButton({
   isChecked,
   onClick,
   className,
+  "aria-label": ariaLabel,
 }: CheckboxButtonProps) {
   return (
     <button
@@ -24,6 +26,7 @@ export default function CheckboxButton({
         className
       )}
       onClick={onClick}
+      aria-label={ariaLabel}
     >
       <Check
         className={cn(

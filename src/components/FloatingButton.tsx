@@ -3,7 +3,7 @@ import type { MouseEventHandler, ReactNode } from "react";
 interface FloatingButtonProps {
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
   children?: ReactNode | undefined;
-  "aria-label"?: string;
+  "aria-label"?: string | undefined;
 }
 
 export default function FloatingButton({

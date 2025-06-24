@@ -31,6 +31,7 @@ interface ButtonProps {
   color?: "primary" | "secondary" | "danger";
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
   className?: string | undefined;
+  "aria-label"?: string | undefined;
 }
 
 export default function Button({
@@ -41,6 +42,7 @@ export default function Button({
   color = "primary",
   onClick,
   className,
+  "aria-label": ariaLabel,
 }: ButtonProps) {
   return (
     <button
@@ -48,6 +50,7 @@ export default function Button({
       disabled={disabled}
       className={cn(baseClasses, variantClasses[variant][color], className)}
       onClick={onClick}
+      aria-label={ariaLabel}
     >
       {children}
     </button>
