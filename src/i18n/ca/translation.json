@@ -12,5 +12,10 @@
   "cancel": "Cancel·la",
 
   "deleteConfirmationTitle": "Vols eliminar la tasca?",
-  "deleteConfirmationMessage": "La tasca \"{{taskTitle}}\" s'eliminarà permanentment."
+  "deleteConfirmationMessage": "La tasca \"{{taskTitle}}\" s'eliminarà permanentment.",
+
+  "editTask": "Edita la tasca \"{{taskTitle}}\"",
+
+  "toggleTaskCompleted": "Marca \"{{taskTitle}}\" com a completada",
+  "toggleTaskPending": "Marca \"{{taskTitle}}\" com a pendent"
 }

@@ -12,5 +12,10 @@
   "cancel": "Cancel",
 
   "deleteConfirmationTitle": "Delete task?",
-  "deleteConfirmationMessage": "The task \"{{taskTitle}}\" will be permanently deleted."
+  "deleteConfirmationMessage": "The task \"{{taskTitle}}\" will be permanently deleted.",
+
+  "editTask": "Edit task \"{{taskTitle}}\"",
+
+  "toggleTaskCompleted": "Mark \"{{taskTitle}}\" as completed",
+  "toggleTaskPending": "Mark \"{{taskTitle}}\" as pending"
 }
