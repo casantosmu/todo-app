@@ -4,6 +4,7 @@ import type { UseFormRegisterReturn } from "react-hook-form";
 interface InputTextProps {
   id: string | undefined;
   label: string;
+  labelVisible?: boolean;
   placeholder?: string | undefined;
   autoFocus?: boolean | undefined;
   autoComplete?: HTMLInputAutoCompleteAttribute | undefined;
@@ -12,6 +13,7 @@ interface InputTextProps {
 export default function InputText({
   id,
   label,
+  labelVisible = true,
   placeholder,
   autoFocus,
   autoComplete,
@@ -21,7 +23,11 @@ export default function InputText({
     <>
       <label
         htmlFor={id}
-        className="block text-sm font-medium text-gray-600 mb-1"
+        className={
+          labelVisible
+            ? "block text-sm font-medium text-gray-600 mb-1"
+            : "sr-only"
+        }
       >
         {label}
       </label>
