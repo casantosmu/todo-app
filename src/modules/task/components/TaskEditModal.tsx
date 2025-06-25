@@ -5,6 +5,7 @@ import CheckboxButton from "../../../components/CheckboxButton";
 import InputText from "../../../components/InputText";
 import Modal from "../../../components/Modal";
 import debounce from "../../../lib/debounce";
+import useTaskToggleCompletion from "../hooks/useTaskToggleCompletion";
 import useTaskUpdate from "../hooks/useTaskUpdate";
 import type Task from "../types/Task";
 
@@ -38,12 +39,13 @@ export default function TaskEditModal({
     onError: console.error,
   });
 
+  const { toggleCompletion } = useTaskToggleCompletion({
+    onSuccess: onTaskUpdate,
+    onError: console.error,
+  });
+
   const handleToggleTask = () => {
-    const toggled: Task = {
-      ...task,
-      completedAt: task.completedAt ? null : new Date(),
-    };
-    taskUpdateMutation.mutate(toggled);
+    toggleCompletion(task);
   };
 
   const taskUpdateMutationMutate = taskUpdateMutation.mutate;

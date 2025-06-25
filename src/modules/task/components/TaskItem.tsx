@@ -6,7 +6,7 @@ import Button from "../../../components/Button";
 import CheckboxButton from "../../../components/CheckboxButton";
 import Modal from "../../../components/Modal";
 import useTaskDelete from "../hooks/useTaskDelete";
-import useTaskUpdate from "../hooks/useTaskUpdate";
+import useTaskToggleCompletion from "../hooks/useTaskToggleCompletion";
 import type Task from "../types/Task";
 
 interface TaskItemProps {
@@ -19,7 +19,7 @@ export default function TaskItem({ task, onEdit }: TaskItemProps) {
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const taskUpdateMutation = useTaskUpdate({
+  const { toggleCompletion } = useTaskToggleCompletion({
     onError: console.error,
   });
 
@@ -28,11 +28,7 @@ export default function TaskItem({ task, onEdit }: TaskItemProps) {
   });
 
   const handleToggleTask = () => {
-    const toggled: Task = {
-      ...task,
-      completedAt: task.completedAt ? null : new Date(),
-    };
-    taskUpdateMutation.mutate(toggled);
+    toggleCompletion(task);
   };
 
   const handleConfirmDelete = () => {
