@@ -10,7 +10,7 @@ import type TaskCreate from "./../types/TaskCreate";
 import { getTaskListKey } from "./_keys";
 
 export default function useTaskCreate(
-  options?: UseMutationOptions<void, Error, TaskCreate>
+  options?: UseMutationOptions<Task, Error, TaskCreate>
 ) {
   const queryClient = useQueryClient();
 
@@ -25,7 +25,12 @@ export default function useTaskCreate(
         completedAt: null,
       };
 
-      await db.put(task);
+      const result = await db.put(task);
+
+      return {
+        ...task,
+        _rev: result.rev,
+      };
     },
     async onSuccess(data, variables, context) {
       await queryClient.invalidateQueries({ queryKey: getTaskListKey() });
