@@ -10,11 +10,13 @@
 
   "delete": "Delete",
   "cancel": "Cancel",
+  "createdAt": "Created at",
 
   "deleteConfirmationTitle": "Delete task?",
   "deleteConfirmationMessage": "The task \"{{taskTitle}}\" will be permanently deleted.",
 
   "editTask": "Edit task \"{{taskTitle}}\"",
+  "taskTitleLabel": "Change the task title",
 
   "toggleTaskCompleted": "Mark \"{{taskTitle}}\" as completed",
   "toggleTaskPending": "Mark \"{{taskTitle}}\" as pending"

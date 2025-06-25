@@ -10,11 +10,13 @@
 
   "delete": "Eliminar",
   "cancel": "Cancelar",
+  "createdAt": "Creada el",
 
   "deleteConfirmationTitle": "¿Eliminar la tarea?",
   "deleteConfirmationMessage": "La tarea \"{{taskTitle}}\" se eliminará permanentemente.",
 
   "editTask": "Editar tarea \"{{taskTitle}}\"",
+  "taskTitleLabel": "Cambiar el titulo de la tarea",
 
   "toggleTaskCompleted": "Marcar \"{{taskTitle}}\" como completada",
   "toggleTaskPending": "Marcar \"{{taskTitle}}\" como pendiente"

@@ -10,11 +10,13 @@
 
   "delete": "Eliminar",
   "cancel": "Cancel·la",
+  "createdAt": "Creada el",
 
   "deleteConfirmationTitle": "Vols eliminar la tasca?",
   "deleteConfirmationMessage": "La tasca \"{{taskTitle}}\" s'eliminarà permanentment.",
 
   "editTask": "Edita la tasca \"{{taskTitle}}\"",
+  "taskTitleLabel": "Canviar el títol de la tasca",
 
   "toggleTaskCompleted": "Marca \"{{taskTitle}}\" com a completada",
   "toggleTaskPending": "Marca \"{{taskTitle}}\" com a pendent"
