@@ -1,36 +1,23 @@
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../components/Button";
 import CheckboxButton from "../../../components/CheckboxButton";
-import InputText from "../../../components/InputText";
 import Modal from "../../../components/Modal";
-import debounce from "../../../lib/debounce";
 import useTaskDelete from "../hooks/useTaskDelete";
 import useTaskUpdate from "../hooks/useTaskUpdate";
 import type Task from "../types/Task";
 
-interface FormValue {
-  title?: string | undefined;
-}
-
 interface TaskItemProps {
   task: Task;
+  onEdit: (task: Task) => void;
 }
 
-export default function TaskItem({ task }: TaskItemProps) {
+export default function TaskItem({ task, onEdit }: TaskItemProps) {
   const { t } = useTranslation();
 
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
-
-  const { register, watch, reset } = useForm({
-    defaultValues: {
-      title: task.title,
-    },
-  });
 
   const taskUpdateMutation = useTaskUpdate({
     onError: console.error,
@@ -61,35 +48,9 @@ export default function TaskItem({ task }: TaskItemProps) {
     setDeleteModalOpen(false);
   };
 
-  const openEditModal = () => {
-    reset({ title: task.title });
-    setEditModalOpen(true);
+  const handleOnEdit = () => {
+    onEdit(task);
   };
-  const closeEditModal = () => {
-    setEditModalOpen(false);
-  };
-
-  // const handleDeleteFromEditModal = () => {
-  //   openDeleteModal();
-  // };
-
-  const taskUpdateMutationMutate = taskUpdateMutation.mutate;
-
-  useEffect(() => {
-    const debouncedCb = debounce((formValue: FormValue) => {
-      const debouncedTitle = formValue.title;
-
-      if (debouncedTitle?.trim() && debouncedTitle !== task.title) {
-        taskUpdateMutationMutate({ ...task, title: debouncedTitle });
-      }
-    }, 500);
-
-    const subscription = watch(debouncedCb);
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [task, taskUpdateMutationMutate, watch]);
 
   return (
     <>
@@ -118,7 +79,7 @@ export default function TaskItem({ task }: TaskItemProps) {
 
             <button
               type="button"
-              onClick={openEditModal}
+              onClick={handleOnEdit}
               className="absolute inset-0 bg-transparent border-none cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
               aria-label={t("editTask", { taskTitle: task.title })}
             />
@@ -160,55 +121,6 @@ export default function TaskItem({ task }: TaskItemProps) {
             {t("delete")}
           </Button>
         </div>
-      </Modal>
-
-      <Modal
-        isOpen={isEditModalOpen}
-        onClose={closeEditModal}
-        aria-labelledby="edit-task-title"
-      >
-        <h2 id="edit-task-title" className="sr-only">
-          {t("editTask", { taskTitle: task.title })}
-        </h2>
-
-        <div className="flex items-center mb-4">
-          <CheckboxButton
-            isChecked={!!task.completedAt}
-            onClick={handleToggleTask}
-            aria-label={t("toggleTaskCompleted", { taskTitle: task.title })}
-          />
-          <span className="text-lg font-bold text-gray-900 ml-3">
-            {t("tasksTitle")}
-          </span>
-        </div>
-
-        <InputText
-          id="edit-task-title-input"
-          label={t("taskTitleLabel")}
-          placeholder={t("taskTitleLabel")}
-          labelVisible={false}
-          autoComplete="off"
-          {...register("title")}
-        />
-
-        <div className="mt-4 text-sm text-gray-500">
-          {t("createdAt")}:{" "}
-          {new Date(task.createdAt).toLocaleString(undefined, {
-            dateStyle: "long",
-            timeStyle: "short",
-          })}
-        </div>
-
-        {/* <div className="mt-6 flex justify-end">
-          <Button
-            color="danger"
-            variant="outline"
-            onClick={handleDeleteFromEditModal}
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            {t("delete")}
-          </Button>
-        </div> */}
       </Modal>
     </>
   );

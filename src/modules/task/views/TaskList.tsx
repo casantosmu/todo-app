@@ -5,12 +5,15 @@ import Container from "../../../components/Container";
 import FloatingButton from "../../../components/FloatingButton";
 import Modal from "../../../components/Modal";
 import TaskCreate from "../components/TaskCreate";
+import TaskEditModal from "../components/TaskEditModal";
 import TaskItem from "../components/TaskItem";
 import useTaskList from "../hooks/useTaskList";
+import type Task from "../types/Task";
 
 export default function TaskList() {
   const { t } = useTranslation();
 
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
@@ -33,11 +36,22 @@ export default function TaskList() {
     },
   });
 
+  const handleOpenEditModal = (task: Task) => {
+    setEditingTask(task);
+  };
+  const handleCloseEditModal = () => {
+    setEditingTask(null);
+  };
+
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleTaskUpdate = (updatedTask: Task) => {
+    setEditingTask(updatedTask);
   };
 
   return (
@@ -57,7 +71,11 @@ export default function TaskList() {
           ) : (
             <ul className="space-y-3">
               {pendingTasks.map((task) => (
-                <TaskItem key={task._id} task={task} />
+                <TaskItem
+                  key={task._id}
+                  task={task}
+                  onEdit={handleOpenEditModal}
+                />
               ))}
             </ul>
           )}
@@ -77,7 +95,11 @@ export default function TaskList() {
           ) : (
             <ul className="space-y-3">
               {completedTasks.map((task) => (
-                <TaskItem key={task._id} task={task} />
+                <TaskItem
+                  key={task._id}
+                  task={task}
+                  onEdit={handleOpenEditModal}
+                />
               ))}
             </ul>
           )}
@@ -98,6 +120,15 @@ export default function TaskList() {
         </h2>
         <TaskCreate />
       </Modal>
+
+      {editingTask && (
+        <TaskEditModal
+          task={editingTask}
+          isOpen={!!editingTask}
+          onClose={handleCloseEditModal}
+          onTaskUpdate={handleTaskUpdate}
+        />
+      )}
     </Container>
   );
 }
