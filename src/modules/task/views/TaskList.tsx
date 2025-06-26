@@ -13,15 +13,9 @@ import type Task from "../types/Task";
 export default function TaskList() {
   const { t } = useTranslation();
 
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenEditModal = (task: Task) => {
-    setEditingTask(task);
-  };
-  const handleCloseEditModal = () => {
-    setEditingTask(null);
-  };
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -30,8 +24,17 @@ export default function TaskList() {
     setIsModalOpen(false);
   };
 
+  const handleOpenEditModal = (task: Task) => {
+    setTaskToEdit(task);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
   const handleTaskUpdate = (updatedTask: Task) => {
-    setEditingTask(updatedTask);
+    setTaskToEdit(updatedTask);
   };
 
   return (
@@ -56,10 +59,10 @@ export default function TaskList() {
         <TaskCreate />
       </Modal>
 
-      {editingTask && (
+      {taskToEdit && (
         <TaskEditModal
-          task={editingTask}
-          isOpen={!!editingTask}
+          task={taskToEdit}
+          isOpen={isEditModalOpen}
           onClose={handleCloseEditModal}
           onTaskUpdate={handleTaskUpdate}
         />
