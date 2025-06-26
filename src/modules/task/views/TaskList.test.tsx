@@ -17,9 +17,13 @@ describe("TaskList", () => {
     await user.click(addTaskFab);
 
     // Get the input and button from the modal.
-    const modal = screen.getByRole("dialog");
-    const input = within(modal).getByRole("textbox", { name: /new task/i });
-    const submitButton = within(modal).getByRole("button", { name: /add/i });
+    const createModal = screen.getByRole("dialog");
+    const input = within(createModal).getByRole("textbox", {
+      name: /new task/i,
+    });
+    const submitButton = within(createModal).getByRole("button", {
+      name: /add/i,
+    });
 
     // The submit button should be disabled until text is entered.
     expect(submitButton).toBeDisabled();
@@ -38,7 +42,9 @@ describe("TaskList", () => {
     expect(pendingTaskItem).toBeInTheDocument();
 
     // Find the complete button within the task item and click it.
-    const checkbox = within(pendingTaskItem).getByRole("button");
+    const checkbox = within(pendingTaskItem).getByRole("button", {
+      name: new RegExp(`mark "${taskTitle}" as completed`, "i"),
+    });
     await user.click(checkbox);
 
     // Wait for the task to be removed from the pending list.
@@ -77,5 +83,84 @@ describe("TaskList", () => {
       const deletedTask = screen.queryByText(taskTitle);
       expect(deletedTask).not.toBeInTheDocument();
     });
+  });
+
+  it("should allow a user to update a task's title and completion status from the edit modal", async () => {
+    const user = userEvent.setup();
+    render(<TaskList />);
+
+    const originalTaskTitle = faker.lorem.sentence(4);
+    const updatedTaskTitle = faker.lorem.sentence(4);
+
+    // Create a new task to work with.
+    const addTaskFab = screen.getByRole("button", { name: /add new task/i });
+    await user.click(addTaskFab);
+
+    const createModal = screen.getByRole("dialog");
+    const input = within(createModal).getByRole("textbox", {
+      name: /new task/i,
+    });
+    const submitButton = within(createModal).getByRole("button", {
+      name: /add/i,
+    });
+
+    await user.type(input, originalTaskTitle);
+    await user.click(submitButton);
+    await user.keyboard("{Escape}");
+
+    const pendingSection = screen.getByRole("region", { name: /tasks/i });
+    const taskItem = await within(pendingSection).findByText(originalTaskTitle);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const taskListItem = taskItem.closest("li")!;
+
+    // Open the edit modal by clicking the task.
+    const editButton = within(taskListItem).getByRole("button", {
+      name: new RegExp(`edit task "${originalTaskTitle}"`, "i"),
+    });
+    await user.click(editButton);
+
+    const editModal = await screen.findByRole("dialog", {
+      name: new RegExp(`edit task "${originalTaskTitle}"`, "i"),
+    });
+
+    // Update the task title.
+    const titleInput = within(editModal).getByRole("textbox", {
+      name: /change the task title/i,
+    });
+    await user.clear(titleInput);
+    await user.type(titleInput, updatedTaskTitle);
+
+    // Close the modal and wait for the debounced update to apply.
+    await user.keyboard("{Escape}");
+    const updatedTask =
+      await within(pendingSection).findByText(updatedTaskTitle);
+    expect(updatedTask).toBeInTheDocument();
+
+    const oldTask = within(pendingSection).queryByText(originalTaskTitle);
+    expect(oldTask).not.toBeInTheDocument();
+
+    // Re-open the edit modal and mark the task as completed.
+    await user.click(editButton);
+
+    const editModalAgain = await screen.findByRole("dialog", {
+      name: new RegExp(`edit task "${updatedTaskTitle}"`, "i"),
+    });
+    const completeButton = within(editModalAgain).getByRole("button", {
+      name: new RegExp(`mark "${updatedTaskTitle}" as completed`, "i"),
+    });
+    await user.click(completeButton);
+    await user.keyboard("{Escape}");
+
+    // Wait for the task to be removed from the pending list.
+    await waitFor(() => {
+      const pendingTask = within(pendingSection).queryByText(updatedTaskTitle);
+      expect(pendingTask).not.toBeInTheDocument();
+    });
+
+    // The task should now be in the "Completed" list.
+    const completedSection = screen.getByRole("region", { name: /completed/i });
+    const completedTask =
+      await within(completedSection).findByText(updatedTaskTitle);
+    expect(completedTask).toBeInTheDocument();
   });
 });
