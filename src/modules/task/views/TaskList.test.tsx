@@ -1,9 +1,19 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { faker } from "@faker-js/faker";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import render from "../../../../tests/render";
+import db, { clearDatabase } from "../../../lib/db";
 import TaskList from "./TaskList";
+
+beforeEach(async () => {
+  await clearDatabase();
+});
+
+afterAll(async () => {
+  await db.destroy();
+});
 
 describe("TaskList", () => {
   it("should allow a user to create a task, see it, complete it, and then delete it", async () => {
@@ -37,7 +47,6 @@ describe("TaskList", () => {
     // Find the new task in the "pending" list.
     const pendingSection = screen.getByRole("region", { name: /tasks/i });
     const pendingTask = await within(pendingSection).findByText(taskTitle);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pendingTaskItem = pendingTask.closest("li")!;
     expect(pendingTaskItem).toBeInTheDocument();
 
@@ -56,7 +65,6 @@ describe("TaskList", () => {
     // Verify the task now appears in the "completed" list.
     const completedSection = screen.getByRole("region", { name: /completed/i });
     const completedTask = await within(completedSection).findByText(taskTitle);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const completedTaskItem = completedTask.closest("li")!;
     expect(completedTaskItem).toBeInTheDocument();
 
@@ -110,7 +118,6 @@ describe("TaskList", () => {
 
     const pendingSection = screen.getByRole("region", { name: /tasks/i });
     const taskItem = await within(pendingSection).findByText(originalTaskTitle);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const taskListItem = taskItem.closest("li")!;
 
     // Open the edit modal by clicking the task.

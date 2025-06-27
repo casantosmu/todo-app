@@ -3,7 +3,12 @@ import FindPouchDB from "pouchdb-find";
 import type Task from "../modules/task/types/Task";
 import config from "./config";
 
-const db = new PouchDB<Task | Omit<Task, "_rev">>("mycentral-db");
+const dbName =
+  typeof import.meta.env.VITEST_POOL_ID === "string"
+    ? `mycentral-db-test-${import.meta.env.VITEST_POOL_ID}`
+    : "mycentral-db";
+
+const db = new PouchDB<Task | Omit<Task, "_rev">>(dbName);
 PouchDB.plugin(FindPouchDB);
 
 if (!config.env.isTest) {
@@ -51,5 +56,20 @@ await Promise.all([
     index: { fields: ["completedAt", "type"] },
   }),
 ]);
+
+export const clearDatabase = async () => {
+  const allDocs = await db.allDocs({ include_docs: true });
+  const docsToDelete = allDocs.rows
+    .filter((row) => !row.id.startsWith("_design/"))
+    .map((row) => ({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ...row.doc!,
+      deleted: true,
+    }));
+
+  if (docsToDelete.length > 0) {
+    await db.bulkDocs(docsToDelete);
+  }
+};
 
 export default db;
