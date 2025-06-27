@@ -83,7 +83,7 @@ export default function TaskItem({ task, onEdit }: TaskItemProps) {
         </ContextMenu.Trigger>
 
         <ContextMenu.Portal>
-          <ContextMenu.Content className="w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+          <ContextMenu.Content className="z-30 w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
             <ContextMenu.Item
               className="flex items-center text-red-500 px-4 py-2 text-sm cursor-pointer select-none data-[highlighted]:bg-red-50 data-[highlighted]:outline-none"
               onSelect={openDeleteModal}
