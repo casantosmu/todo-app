@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import ReactModal from "react-modal";
 
 interface ModalProps {
@@ -14,6 +15,8 @@ export default function Modal({
   children,
   "aria-labelledby": labelledby,
 }: ModalProps) {
+  const { t } = useTranslation();
+
   return (
     <ReactModal
       isOpen={isOpen}
@@ -25,6 +28,11 @@ export default function Modal({
         labelledby: labelledby,
       }}
     >
+      {onClose && (
+        <button type="button" onClick={onClose} className="sr-only">
+          {t("close")}
+        </button>
+      )}
       {children}
     </ReactModal>
   );

@@ -42,7 +42,11 @@ describe("TaskList", () => {
 
     // Submit the new task.
     await user.click(submitButton);
-    await user.keyboard("{Escape}");
+    await user.click(
+      within(createModal).getByRole("button", {
+        name: /close/i,
+      })
+    );
 
     // Find the new task in the "pending" list.
     const pendingSection = screen.getByRole("region", { name: /tasks/i });
@@ -114,7 +118,11 @@ describe("TaskList", () => {
 
     await user.type(input, originalTaskTitle);
     await user.click(submitButton);
-    await user.keyboard("{Escape}");
+    await user.click(
+      within(createModal).getByRole("button", {
+        name: /close/i,
+      })
+    );
 
     const pendingSection = screen.getByRole("region", { name: /tasks/i });
     const taskItem = await within(pendingSection).findByText(originalTaskTitle);
@@ -138,7 +146,11 @@ describe("TaskList", () => {
     await user.type(titleInput, updatedTaskTitle);
 
     // Close the modal and wait for the debounced update to apply.
-    await user.keyboard("{Escape}");
+    await user.click(
+      within(editModal).getByRole("button", {
+        name: /close/i,
+      })
+    );
     const updatedTask =
       await within(pendingSection).findByText(updatedTaskTitle);
     expect(updatedTask).toBeInTheDocument();
@@ -156,7 +168,11 @@ describe("TaskList", () => {
       name: new RegExp(`mark "${updatedTaskTitle}" as completed`, "i"),
     });
     await user.click(completeButton);
-    await user.keyboard("{Escape}");
+    await user.click(
+      within(editModalAgain).getByRole("button", {
+        name: /close/i,
+      })
+    );
 
     // Wait for the task to be removed from the pending list.
     await waitFor(() => {

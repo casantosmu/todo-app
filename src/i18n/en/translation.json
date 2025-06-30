@@ -10,6 +10,7 @@
 
   "delete": "Delete",
   "cancel": "Cancel",
+  "close": "Close",
   "createdAt": "Created at",
 
   "deleteConfirmationTitle": "Delete task?",
