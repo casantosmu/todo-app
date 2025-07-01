@@ -61,7 +61,6 @@ export default function TaskList() {
 
       {taskToEdit && (
         <TaskEditModal
-          key={taskToEdit._rev}
           task={taskToEdit}
           isOpen={isEditModalOpen}
           onClose={handleCloseEditModal}

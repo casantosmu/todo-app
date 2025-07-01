@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import render from "../../../../tests/render";
 import db, { clearDatabase } from "../../../lib/db";
+import sleep from "../../../lib/sleep";
 import TaskList from "./TaskList";
 
 beforeEach(async () => {
@@ -251,5 +252,44 @@ describe("TaskList", () => {
     await screen.findByRole("dialog", {
       name: new RegExp(`edit task "${task2Title}"`, "i"),
     });
+  });
+
+  it("should maintain focus on the input field after a debounced update", async () => {
+    const user = userEvent.setup();
+    render(<TaskList />);
+
+    const taskTitle = faker.lorem.sentence(3);
+
+    // Create task
+    const addTaskFab = screen.getByRole("button", { name: /add new task/i });
+    await user.click(addTaskFab);
+    const createModal = screen.getByRole("dialog");
+    await user.type(
+      within(createModal).getByRole("textbox", { name: /new task/i }),
+      taskTitle
+    );
+    await user.click(within(createModal).getByRole("button", { name: /add/i }));
+    await user.click(
+      within(createModal).getByRole("button", { name: /close/i })
+    );
+
+    // Open edit modal
+    const taskItem = await screen.findByText(taskTitle);
+    await user.click(
+      within(taskItem.closest("li")!).getByRole("button", {
+        name: new RegExp(`edit task "${taskTitle}"`, "i"),
+      })
+    );
+
+    // Update task title
+    const editModal = await screen.findByRole("dialog");
+    const titleInput = within(editModal).getByRole("textbox", {
+      name: /change the task title/i,
+    });
+    await user.type(titleInput, " - updated");
+
+    await sleep(1_000);
+
+    expect(titleInput).toHaveFocus();
   });
 });

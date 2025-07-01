@@ -28,7 +28,7 @@ export default function TaskEditModal({
 }: TaskEditModalProps) {
   const { t } = useTranslation();
 
-  const { register, watch } = useForm({
+  const { register, watch, reset } = useForm({
     defaultValues: {
       title: task.title,
     },
@@ -47,6 +47,12 @@ export default function TaskEditModal({
   const handleToggleTask = () => {
     toggleCompletion(task);
   };
+
+  useEffect(() => {
+    reset({
+      title: task.title,
+    });
+  }, [task, reset]);
 
   const taskUpdateMutationMutate = taskUpdateMutation.mutate;
 
