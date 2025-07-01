@@ -12,7 +12,11 @@ interface FormInput {
 export default function TaskCreate() {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, watch, reset } = useForm<FormInput>();
+  const { register, handleSubmit, watch, reset } = useForm<FormInput>({
+    defaultValues: {
+      title: "",
+    },
+  });
 
   const taskCreateMutation = useTaskCreate({
     onSuccess() {

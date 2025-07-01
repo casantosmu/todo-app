@@ -186,4 +186,70 @@ describe("TaskList", () => {
       await within(completedSection).findByText(updatedTaskTitle);
     expect(completedTask).toBeInTheDocument();
   });
+
+  it("should open the correct edit modal for each newly added task", async () => {
+    const user = userEvent.setup();
+    render(<TaskList />);
+
+    const task1Title = faker.lorem.sentence(4);
+    const task2Title = faker.lorem.sentence(4);
+
+    const addTaskFab = screen.getByRole("button", { name: /add new task/i });
+    await user.click(addTaskFab);
+
+    const createModal = screen.getByRole("dialog");
+    const input = within(createModal).getByRole("textbox", {
+      name: /new task/i,
+    });
+    const submitButton = within(createModal).getByRole("button", {
+      name: /add/i,
+    });
+
+    // Add the first task
+    await user.type(input, task1Title);
+    await user.click(submitButton);
+    await waitFor(() => {
+      expect(input).toHaveValue("");
+    });
+
+    // Add the second task
+    await user.type(input, task2Title);
+    await user.click(submitButton);
+    await waitFor(() => {
+      expect(input).toHaveValue("");
+    });
+
+    // Close create task modal
+    await user.click(
+      within(createModal).getByRole("button", {
+        name: /close/i,
+      })
+    );
+
+    const pendingSection = screen.getByRole("region", { name: /tasks/i });
+
+    // Open edit task 1
+    const task1EditBtn = within(pendingSection).getByRole("button", {
+      name: new RegExp(`edit task "${task1Title}"`, "i"),
+    });
+    await user.click(task1EditBtn);
+    const task1Modal = await screen.findByRole("dialog");
+    await within(task1Modal).findByDisplayValue(task1Title);
+    await user.click(
+      within(task1Modal).getByRole("button", {
+        name: /close/i,
+      })
+    );
+
+    // Open edit task 2
+    const task2EditBtn = within(pendingSection).getByRole("button", {
+      name: new RegExp(`edit task "${task2Title}"`, "i"),
+    });
+    await user.click(task2EditBtn);
+    const task2Modal = await screen.findByRole("dialog");
+    await within(task2Modal).findByDisplayValue(task2Title);
+    await screen.findByRole("dialog", {
+      name: new RegExp(`edit task "${task2Title}"`, "i"),
+    });
+  });
 });
