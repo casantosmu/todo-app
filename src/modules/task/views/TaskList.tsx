@@ -7,7 +7,7 @@ import Modal from "../../../components/Modal";
 import CompletedTaskList from "../components/CompletedTaskList";
 import PendingTaskList from "../components/PendingTaskList";
 import TaskCreate from "../components/TaskCreate";
-import TaskEditModal from "../components/TaskEditModal";
+import TaskEdit from "../components/TaskEdit";
 import type Task from "../types/Task";
 
 export default function TaskList() {
@@ -31,6 +31,7 @@ export default function TaskList() {
 
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
+    setTaskToEdit(null);
   };
 
   const handleTaskUpdate = (updatedTask: Task) => {
@@ -59,14 +60,20 @@ export default function TaskList() {
         <TaskCreate />
       </Modal>
 
-      {taskToEdit && (
-        <TaskEditModal
-          task={taskToEdit}
-          isOpen={isEditModalOpen}
-          onClose={handleCloseEditModal}
-          onTaskUpdate={handleTaskUpdate}
-        />
-      )}
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={handleCloseEditModal}
+        aria-labelledby="edit-task-title"
+      >
+        {taskToEdit && (
+          <>
+            <h2 id="edit-task-title" className="sr-only">
+              {t("editTask", { taskTitle: taskToEdit.title })}
+            </h2>
+            <TaskEdit task={taskToEdit} onTaskUpdate={handleTaskUpdate} />
+          </>
+        )}
+      </Modal>
     </Container>
   );
 }

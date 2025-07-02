@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import CheckboxButton from "../../../components/CheckboxButton";
 import InputText from "../../../components/InputText";
-import Modal from "../../../components/Modal";
 import debounce from "../../../lib/debounce";
 import useTaskToggleCompletion from "../hooks/useTaskToggleCompletion";
 import useTaskUpdate from "../hooks/useTaskUpdate";
@@ -15,17 +14,10 @@ interface FormValue {
 
 interface TaskEditModalProps {
   task: Task;
-  isOpen: boolean;
-  onClose: () => void;
   onTaskUpdate: (updatedTask: Task) => void;
 }
 
-export default function TaskEditModal({
-  task,
-  isOpen,
-  onClose,
-  onTaskUpdate,
-}: TaskEditModalProps) {
+export default function TaskEdit({ task, onTaskUpdate }: TaskEditModalProps) {
   const { t } = useTranslation();
 
   const { register, watch, reset } = useForm({
@@ -73,11 +65,7 @@ export default function TaskEditModal({
   }, [task, taskUpdateMutationMutate, watch]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} aria-labelledby="edit-task-title">
-      <h2 id="edit-task-title" className="sr-only">
-        {t("editTask", { taskTitle: task.title })}
-      </h2>
-
+    <>
       <div className="flex items-center mb-4">
         <CheckboxButton
           isChecked={!!task.completedAt}
@@ -119,6 +107,6 @@ export default function TaskEditModal({
             {t("delete")}
           </Button>
         </div> */}
-    </Modal>
+    </>
   );
 }
