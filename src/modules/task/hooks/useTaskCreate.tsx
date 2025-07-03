@@ -10,7 +10,7 @@ import type TaskCreate from "./../types/TaskCreate";
 import { getTaskListKey } from "./_keys";
 
 export default function useTaskCreate(
-  options?: UseMutationOptions<Task, Error, TaskCreate>
+  options?: UseMutationOptions<Task, Error, TaskCreate>,
 ) {
   const queryClient = useQueryClient();
 

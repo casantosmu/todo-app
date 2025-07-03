@@ -15,7 +15,7 @@ export default function FloatingButton({
     <button
       type="button"
       onClick={onClick}
-      className="fixed bottom-6 right-6 p-4 rounded-full bg-gray-800 text-white cursor-pointer hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+      className="fixed right-6 bottom-6 cursor-pointer rounded-full bg-gray-800 p-4 text-white transition-colors hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
       aria-label={ariaLabel}
     >
       {children}

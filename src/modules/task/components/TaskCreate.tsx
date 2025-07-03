@@ -45,7 +45,7 @@ export default function TaskCreate() {
 
       <div className="flex justify-end">
         <Button type="submit" disabled={isButtonDisabled}>
-          <Plus className="w-5 h-5 mr-2" strokeWidth={1.5} />
+          <Plus className="mr-2 h-5 w-5" strokeWidth={1.5} />
           {t("addTaskButton")}
         </Button>
       </div>

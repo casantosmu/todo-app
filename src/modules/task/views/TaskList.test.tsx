@@ -46,7 +46,7 @@ describe("TaskList", () => {
     await user.click(
       within(createModal).getByRole("button", {
         name: /close/i,
-      })
+      }),
     );
 
     // Find the new task in the "pending" list.
@@ -122,7 +122,7 @@ describe("TaskList", () => {
     await user.click(
       within(createModal).getByRole("button", {
         name: /close/i,
-      })
+      }),
     );
 
     const pendingSection = screen.getByRole("region", { name: /tasks/i });
@@ -150,7 +150,7 @@ describe("TaskList", () => {
     await user.click(
       within(editModal).getByRole("button", {
         name: /close/i,
-      })
+      }),
     );
     const updatedTask =
       await within(pendingSection).findByText(updatedTaskTitle);
@@ -172,7 +172,7 @@ describe("TaskList", () => {
     await user.click(
       within(editModalAgain).getByRole("button", {
         name: /close/i,
-      })
+      }),
     );
 
     // Wait for the task to be removed from the pending list.
@@ -224,7 +224,7 @@ describe("TaskList", () => {
     await user.click(
       within(createModal).getByRole("button", {
         name: /close/i,
-      })
+      }),
     );
 
     const pendingSection = screen.getByRole("region", { name: /tasks/i });
@@ -239,7 +239,7 @@ describe("TaskList", () => {
     await user.click(
       within(task1Modal).getByRole("button", {
         name: /close/i,
-      })
+      }),
     );
 
     // Open edit task 2
@@ -266,11 +266,11 @@ describe("TaskList", () => {
     const createModal = screen.getByRole("dialog");
     await user.type(
       within(createModal).getByRole("textbox", { name: /new task/i }),
-      taskTitle
+      taskTitle,
     );
     await user.click(within(createModal).getByRole("button", { name: /add/i }));
     await user.click(
-      within(createModal).getByRole("button", { name: /close/i })
+      within(createModal).getByRole("button", { name: /close/i }),
     );
 
     // Open edit modal
@@ -278,7 +278,7 @@ describe("TaskList", () => {
     await user.click(
       within(taskItem.closest("li")!).getByRole("button", {
         name: new RegExp(`edit task "${taskTitle}"`, "i"),
-      })
+      }),
     );
 
     // Update task title

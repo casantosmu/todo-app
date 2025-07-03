@@ -8,7 +8,7 @@ import type Task from "../types/Task";
 import { getTaskListKey } from "./_keys";
 
 export default function useTaskDelete(
-  options?: UseMutationOptions<void, Error, Task>
+  options?: UseMutationOptions<void, Error, Task>,
 ) {
   const queryClient = useQueryClient();
 

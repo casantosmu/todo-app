@@ -52,14 +52,14 @@ export default function TaskItem({ task, onEdit }: TaskItemProps) {
     <>
       <ContextMenu.Root>
         <ContextMenu.Trigger asChild>
-          <li className="relative flex items-center w-full p-4 bg-white border border-gray-200 rounded-lg">
+          <li className="relative flex w-full items-center rounded-lg border border-gray-200 bg-white p-4">
             <CheckboxButton
               isChecked={!!task.completedAt}
               onClick={handleToggleTask}
               className="z-1"
               aria-label={t(
                 task.completedAt ? "toggleTaskPending" : "toggleTaskCompleted",
-                { taskTitle: task.title }
+                { taskTitle: task.title },
               )}
             />
 
@@ -76,7 +76,7 @@ export default function TaskItem({ task, onEdit }: TaskItemProps) {
             <button
               type="button"
               onClick={handleOnEdit}
-              className="absolute inset-0 bg-transparent border-none cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="absolute inset-0 cursor-pointer rounded-lg border-none bg-transparent focus:ring-2 focus:ring-gray-500 focus:outline-none"
               aria-label={t("editTask", { taskTitle: task.title })}
             />
           </li>
@@ -90,10 +90,10 @@ export default function TaskItem({ task, onEdit }: TaskItemProps) {
             className="z-30 w-56 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
           >
             <ContextMenu.Item
-              className="flex items-center text-red-500 px-4 py-2 text-sm cursor-pointer select-none data-[highlighted]:bg-red-50 data-[highlighted]:outline-none"
+              className="flex cursor-pointer items-center px-4 py-2 text-sm text-red-500 select-none data-[highlighted]:bg-red-50 data-[highlighted]:outline-none"
               onSelect={openDeleteModal}
             >
-              <Trash2 className="w-4 h-4 mr-2" />
+              <Trash2 className="mr-2 h-4 w-4" />
               {t("delete")}
             </ContextMenu.Item>
           </ContextMenu.Content>

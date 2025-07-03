@@ -27,7 +27,7 @@ export default function CompletedTaskList({
 
   return (
     <section aria-labelledby={headingId}>
-      <h2 id={headingId} className="text-xl font-semibold text-gray-800 mb-4">
+      <h2 id={headingId} className="mb-4 text-xl font-semibold text-gray-800">
         {t("completedTitle")}
       </h2>
 

@@ -8,7 +8,7 @@ export default function render(children?: ReactNode) {
   const queryClient = new QueryClient();
 
   const view = renderLib(
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>,
   );
 
   Modal.setAppElement(view.container);

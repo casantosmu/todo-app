@@ -6,7 +6,7 @@
  */
 export default function debounce<T extends unknown[]>(
   callback: (...args: T) => void,
-  delay: number
+  delay: number,
 ) {
   let timeoutTimer: ReturnType<typeof setTimeout>;
 

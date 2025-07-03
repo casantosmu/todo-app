@@ -44,7 +44,7 @@ if (config.env.isDev || config.env.isTest) {
       })
       .map((index) => {
         return db.deleteIndex(index);
-      })
+      }),
   );
 }
 

@@ -66,16 +66,16 @@ export default function TaskEdit({ task, onTaskUpdate }: TaskEditModalProps) {
 
   return (
     <>
-      <div className="flex items-center mb-4">
+      <div className="mb-4 flex items-center">
         <CheckboxButton
           isChecked={!!task.completedAt}
           onClick={handleToggleTask}
           aria-label={t(
             task.completedAt ? "toggleTaskPending" : "toggleTaskCompleted",
-            { taskTitle: task.title }
+            { taskTitle: task.title },
           )}
         />
-        <span className="text-lg font-bold text-gray-900 ml-3">
+        <span className="ml-3 text-lg font-bold text-gray-900">
           {t("tasksTitle")}
         </span>
       </div>

@@ -3,7 +3,7 @@ import type Task from "../types/Task";
 import useTaskUpdate from "./useTaskUpdate";
 
 export default function useTaskToggleCompletion(
-  options?: UseMutationOptions<Task, Error, Task>
+  options?: UseMutationOptions<Task, Error, Task>,
 ) {
   const taskUpdateMutation = useTaskUpdate(options);
 

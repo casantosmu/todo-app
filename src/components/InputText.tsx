@@ -25,7 +25,7 @@ export default function InputText({
         htmlFor={id}
         className={
           labelVisible
-            ? "block text-sm font-medium text-gray-600 mb-1"
+            ? "mb-1 block text-sm font-medium text-gray-600"
             : "sr-only"
         }
       >
@@ -35,7 +35,7 @@ export default function InputText({
         type="text"
         id={id}
         placeholder={placeholder}
-        className="block w-full px-3 py-2 text-base text-gray-800 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800 focus:border-gray-800 transition-colors"
+        className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-800 placeholder-gray-400 shadow-sm transition-colors focus:border-gray-800 focus:ring-1 focus:ring-gray-800 focus:outline-none"
         autoFocus={autoFocus}
         autoComplete={autoComplete}
         {...rest}

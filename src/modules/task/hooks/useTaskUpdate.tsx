@@ -8,7 +8,7 @@ import type Task from "../types/Task";
 import { getTaskListKey } from "./_keys";
 
 export default function useTaskUpdate(
-  options?: UseMutationOptions<Task, Error, Task>
+  options?: UseMutationOptions<Task, Error, Task>,
 ) {
   const queryClient = useQueryClient();
 

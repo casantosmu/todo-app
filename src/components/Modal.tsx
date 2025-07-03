@@ -22,7 +22,7 @@ export default function Modal({
     <ReactModal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="z-100 relative bg-white w-full max-w-md p-6 rounded-lg shadow-xl focus:outline-none"
+      className="relative z-100 w-full max-w-md rounded-lg bg-white p-6 shadow-xl focus:outline-none"
       overlayClassName="z-100 fixed inset-0 bg-gray-900/50 flex items-center justify-center p-4"
       shouldFocusAfterRender={true}
       aria={{
@@ -34,12 +34,7 @@ export default function Modal({
           type="button"
           onClick={onClose}
           aria-label={t("close")}
-          className="
-            absolute top-3 right-3 p-1 rounded-full text-gray-500
-            opacity-70 transition-all duration-150 ease-in-out
-            hover:opacity-100 hover:bg-gray-100
-            focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500
-          "
+          className="absolute top-3 right-3 rounded-full p-1 text-gray-500 opacity-70 transition-all duration-150 ease-in-out hover:bg-gray-100 hover:opacity-100 focus:opacity-100 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
         >
           <X className="h-5 w-5" />
         </button>
