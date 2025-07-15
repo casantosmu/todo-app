@@ -14,8 +14,8 @@ export const TodosService = {
     const newTodo: Todo = {
       _id: generateId("todo"),
       title,
-      completed: false,
-      createdAt: Date.now(),
+      completedAt: null,
+      createdAt: new Date(),
     };
     return db.put(newTodo);
   },
