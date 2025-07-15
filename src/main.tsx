@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
-import { ThemeProvider } from "./contexts/Theme/ThemeProvider.tsx";
 import "./index.css";
+import { ThemeProvider } from "./providers/ThemeProvider";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
