@@ -54,7 +54,7 @@ export const TaskItem = ({
       {isEditing ? (
         <input
           type="text"
-          className="w-full focus-visible:outline-0"
+          className="selection:bg-primary selection:text-primary-foreground w-full focus-visible:outline-none"
           defaultValue={todo.title}
           autoFocus
           autoComplete="off"
