@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { MainLayout } from "./components/shared/main-layout";
 import { TopNavbar } from "./components/shared/top-navbar";
 import { generateId } from "./lib/id";
@@ -5,44 +6,23 @@ import { QuickAddBar } from "./modules/todos/components/quick-add-bar";
 import { TaskItem } from "./modules/todos/components/task-item";
 import type { Todo } from "./modules/todos/types";
 
-const todos: { todo: Todo; isEditing: boolean }[] = [
-  {
-    todo: {
-      _id: generateId("todo"),
-      title: "Preparar la presentación para el lunes",
-      completedAt: null,
-      createdAt: new Date(),
-    },
-    isEditing: false,
+const editingIndex = faker.number.int({ min: 0, max: 29 });
+
+const todos: { todo: Todo; isEditing: boolean }[] = Array.from(
+  { length: 30 },
+  (_, index) => {
+    const isCompleted = faker.datatype.boolean();
+    return {
+      todo: {
+        _id: generateId("todo"),
+        title: faker.lorem.sentence({ min: 5, max: 10 }),
+        completedAt: isCompleted ? faker.date.recent() : null,
+        createdAt: faker.date.past(),
+      },
+      isEditing: index === editingIndex,
+    };
   },
-  {
-    todo: {
-      _id: generateId("todo"),
-      title: "Revisar el pull request de la nueva feature",
-      completedAt: null,
-      createdAt: new Date(),
-    },
-    isEditing: false,
-  },
-  {
-    todo: {
-      _id: generateId("todo"),
-      title: "Corregir bug en el login",
-      completedAt: null,
-      createdAt: new Date(),
-    },
-    isEditing: true,
-  },
-  {
-    todo: {
-      _id: generateId("todo"),
-      title: "Hacer la compra semanal",
-      completedAt: new Date(),
-      createdAt: new Date(),
-    },
-    isEditing: false,
-  },
-];
+);
 
 export default function App() {
   return (
