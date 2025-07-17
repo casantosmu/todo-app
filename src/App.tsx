@@ -2,29 +2,24 @@ import { faker } from "@faker-js/faker";
 import { MainLayout } from "./components/shared/main-layout";
 import { TopNavbar } from "./components/shared/top-navbar";
 import { generateId } from "./lib/id";
+import { CompletedTasksAccordion } from "./modules/todos/components/completed-tasks-accordion";
 import { QuickAddBar } from "./modules/todos/components/quick-add-bar";
-import { TaskItem } from "./modules/todos/components/task-item";
+import { TaskList } from "./modules/todos/components/task-list";
 import type { Todo } from "./modules/todos/types";
 
-const editingIndex = faker.number.int({ min: 0, max: 29 });
-
-const todos: { todo: Todo; isEditing: boolean }[] = Array.from(
-  { length: 30 },
-  (_, index) => {
-    const isCompleted = faker.datatype.boolean();
-    return {
-      todo: {
-        _id: generateId("todo"),
-        title: faker.lorem.sentence({ min: 5, max: 10 }),
-        completedAt: isCompleted ? faker.date.recent() : null,
-        createdAt: faker.date.past(),
-      },
-      isEditing: index === editingIndex,
-    };
-  },
-);
+const todos: Todo[] = Array.from({ length: 30 }, () => {
+  return {
+    _id: generateId("todo"),
+    title: faker.lorem.sentence({ min: 5, max: 10 }),
+    completedAt: faker.datatype.boolean() ? faker.date.recent() : null,
+    createdAt: faker.date.past(),
+  };
+});
 
 export default function App() {
+  const pendingTodos = todos.filter((item) => !item.completedAt);
+  const completedTodos = todos.filter((item) => item.completedAt);
+
   return (
     <MainLayout>
       <header className="bg-background sticky top-0 z-10 py-4">
@@ -36,11 +31,10 @@ export default function App() {
 
       <main>
         <section className="mt-4">
-          <ul className="space-y-2">
-            {todos.map(({ todo, isEditing }) => (
-              <TaskItem key={todo._id} todo={todo} isEditing={isEditing} />
-            ))}
-          </ul>
+          <TaskList todos={pendingTodos} />
+        </section>
+        <section className="mt-4">
+          <CompletedTasksAccordion todos={completedTodos} />
         </section>
       </main>
     </MainLayout>

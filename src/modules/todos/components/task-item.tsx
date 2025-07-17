@@ -23,13 +23,13 @@ interface TaskItemProps
   extends React.LiHTMLAttributes<HTMLLIElement>,
     React.RefAttributes<HTMLLIElement> {
   todo: Todo;
-  isEditing: boolean;
+  isEditing?: boolean;
 }
 
 export const TaskItem = ({
   ref,
   todo,
-  isEditing,
+  isEditing = false,
   className,
   ...props
 }: TaskItemProps) => {
