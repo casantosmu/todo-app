@@ -27,12 +27,15 @@ const todos: { todo: Todo; isEditing: boolean }[] = Array.from(
 export default function App() {
   return (
     <MainLayout>
-      <TopNavbar />
+      <header className="bg-background sticky top-0 z-10 py-4">
+        <TopNavbar />
+        <div className="mt-4">
+          <QuickAddBar />
+        </div>
+      </header>
 
-      <main className="mt-8">
-        <QuickAddBar />
-
-        <section className="mt-5">
+      <main>
+        <section className="mt-4">
           <ul className="space-y-2">
             {todos.map(({ todo, isEditing }) => (
               <TaskItem key={todo._id} todo={todo} isEditing={isEditing} />
