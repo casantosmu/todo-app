@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { MainLayout } from "./components/shared/main-layout";
 import { TopNavbar } from "./components/shared/top-navbar";
 import { generateId } from "./lib/id";
 import { CompletedTasksAccordion } from "./modules/todos/components/completed-tasks-accordion";
@@ -21,7 +20,7 @@ export default function App() {
   const completedTodos = todos.filter((item) => item.completedAt);
 
   return (
-    <MainLayout>
+    <div className="mx-auto max-w-xl px-4 py-8">
       <header className="bg-background sticky top-0 z-10 py-4">
         <TopNavbar />
         <div className="mt-4">
@@ -37,6 +36,6 @@ export default function App() {
           <CompletedTasksAccordion todos={completedTodos} />
         </section>
       </main>
-    </MainLayout>
+    </div>
   );
 }
