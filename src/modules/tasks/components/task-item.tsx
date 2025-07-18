@@ -2,7 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 import { Trash2 } from "lucide-react";
-import type { Todo } from "../types";
+import type { Task } from "../models/task";
 
 const taskItemVariants = cva(
   "group flex items-center gap-3 rounded-md p-2 transition-colors duration-150 hover:bg-muted",
@@ -22,13 +22,13 @@ const taskItemVariants = cva(
 interface TaskItemProps
   extends React.LiHTMLAttributes<HTMLLIElement>,
     React.RefAttributes<HTMLLIElement> {
-  todo: Todo;
+  task: Task;
   isEditing?: boolean;
 }
 
 export const TaskItem = ({
   ref,
-  todo,
+  task,
   isEditing = false,
   className,
   ...props
@@ -37,16 +37,16 @@ export const TaskItem = ({
     <li
       ref={ref}
       className={cn(
-        taskItemVariants({ completed: !!todo.completedAt }),
+        taskItemVariants({ completed: !!task.completedAt }),
         isEditing && "bg-muted",
         className,
       )}
       {...props}
     >
       <Checkbox
-        checked={!!todo.completedAt}
-        aria-label={`Mark task "${todo.title}" as ${
-          todo.completedAt ? "incomplete" : "complete"
+        checked={!!task.completedAt}
+        aria-label={`Mark task "${task.title}" as ${
+          task.completedAt ? "incomplete" : "complete"
         }`}
         className="h-5 w-5"
       />
@@ -55,17 +55,17 @@ export const TaskItem = ({
         <input
           type="text"
           className="selection:bg-primary selection:text-primary-foreground w-full focus-visible:outline-none"
-          defaultValue={todo.title}
+          defaultValue={task.title}
           autoFocus
           autoComplete="off"
         />
       ) : (
         <>
-          <span className="grow truncate">{todo.title}</span>
+          <span className="grow truncate">{task.title}</span>
           <div className="flex items-center">
             <button
               type="button"
-              aria-label={`Delete task "${todo.title}"`}
+              aria-label={`Delete task "${task.title}"`}
               className="text-muted-foreground hover:text-destructive opacity-0 transition-all duration-150 group-hover:opacity-100"
             >
               <Trash2 className="h-5 w-5" />

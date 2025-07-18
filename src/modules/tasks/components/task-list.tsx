@@ -1,13 +1,13 @@
 import { CheckCircle2 } from "lucide-react";
-import type { Todo } from "../types";
+import type { Task } from "../models/task";
 import { TaskItem } from "./task-item";
 
 interface TaskListProps {
-  todos: Todo[];
+  tasks: Task[];
 }
 
-export const TaskList = ({ todos }: TaskListProps) => {
-  if (todos.length === 0) {
+export const TaskList = ({ tasks }: TaskListProps) => {
+  if (tasks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
         <CheckCircle2 className="text-muted-foreground h-12 w-12" />
@@ -23,8 +23,8 @@ export const TaskList = ({ todos }: TaskListProps) => {
 
   return (
     <ul className="space-y-2">
-      {todos.map((todo) => (
-        <TaskItem key={todo._id} todo={todo} />
+      {tasks.map((todo) => (
+        <TaskItem key={todo.id} task={todo} />
       ))}
     </ul>
   );

@@ -4,17 +4,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import type { Todo } from "../types";
+import type { Task } from "../models/task";
 import { TaskItem } from "./task-item";
 
 interface CompletedTasksAccordionProps {
-  todos: Todo[];
+  tasks: Task[];
 }
 
 export const CompletedTasksAccordion = ({
-  todos,
+  tasks,
 }: CompletedTasksAccordionProps) => {
-  if (todos.length === 0) {
+  if (tasks.length === 0) {
     return null;
   }
 
@@ -22,12 +22,12 @@ export const CompletedTasksAccordion = ({
     <Accordion type="single" collapsible>
       <AccordionItem value="completed-tasks">
         <AccordionTrigger className="text-muted-foreground hover:no-underline">
-          {`View ${todos.length.toString()} completed tasks`}
+          {`View ${tasks.length.toString()} completed tasks`}
         </AccordionTrigger>
         <AccordionContent>
           <ul className="space-y-2">
-            {todos.map((todo) => (
-              <TaskItem key={todo._id} todo={todo} />
+            {tasks.map((todo) => (
+              <TaskItem key={todo.id} task={todo} />
             ))}
           </ul>
         </AccordionContent>

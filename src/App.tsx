@@ -1,17 +1,20 @@
 import { faker } from "@faker-js/faker";
 import { TopNavbar } from "./components/shared/top-navbar";
 import { generateId } from "./lib/id";
-import { CompletedTasksAccordion } from "./modules/todos/components/completed-tasks-accordion";
-import { QuickAddBar } from "./modules/todos/components/quick-add-bar";
-import { TaskList } from "./modules/todos/components/task-list";
-import type { Todo } from "./modules/todos/types";
+import { CompletedTasksAccordion } from "./modules/tasks/components/completed-tasks-accordion";
+import { QuickAddBar } from "./modules/tasks/components/quick-add-bar";
+import { TaskList } from "./modules/tasks/components/task-list";
+import { TASK_STATUS, type Task } from "./modules/tasks/models/task";
 
-const todos: Todo[] = Array.from({ length: 30 }, () => {
+const todos: Task[] = Array.from({ length: 30 }, () => {
+  const isCompleted = faker.datatype.boolean();
   return {
-    _id: generateId("todo"),
+    id: generateId(),
     title: faker.lorem.sentence({ min: 5, max: 10 }),
-    completedAt: faker.datatype.boolean() ? faker.date.recent() : null,
+    completedAt: isCompleted ? faker.date.recent() : null,
+    isCompleted: isCompleted ? TASK_STATUS.COMPLETED : TASK_STATUS.PENDING,
     createdAt: faker.date.past(),
+    updatedAt: faker.date.past(), // IMPROVE
   };
 });
 
@@ -30,10 +33,10 @@ export default function App() {
 
       <main>
         <section className="mt-4">
-          <TaskList todos={pendingTodos} />
+          <TaskList tasks={pendingTodos} />
         </section>
         <section className="mt-4">
-          <CompletedTasksAccordion todos={completedTodos} />
+          <CompletedTasksAccordion tasks={completedTodos} />
         </section>
       </main>
     </div>
