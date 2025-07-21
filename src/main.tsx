@@ -2,6 +2,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import { seedDatabase } from "./lib/db";
 import { queryClient } from "./lib/react-query";
 import { ThemeProvider } from "./providers/ThemeProvider";
 
@@ -12,6 +13,8 @@ const rootElement = document.getElementById("root");
 if (!rootElement) {
   throw new Error("Failed to find the root element");
 }
+
+await seedDatabase();
 
 createRoot(rootElement).render(
   <StrictMode>

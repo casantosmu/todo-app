@@ -1,26 +1,25 @@
-import { faker } from "@faker-js/faker";
 import { TopNavbar } from "./components/shared/top-navbar";
-import { generateId } from "./lib/id";
 import { CompletedTasksAccordion } from "./modules/tasks/components/completed-tasks-accordion";
 import { QuickAddBar } from "./modules/tasks/components/quick-add-bar";
 import { TaskList } from "./modules/tasks/components/task-list";
-import { TASK_STATUS, type Task } from "./modules/tasks/models/task";
-
-const todos: Task[] = Array.from({ length: 30 }, () => {
-  const isCompleted = faker.datatype.boolean();
-  return {
-    id: generateId(),
-    title: faker.lorem.sentence({ min: 5, max: 10 }),
-    completedAt: isCompleted ? faker.date.recent() : null,
-    isCompleted: isCompleted ? TASK_STATUS.COMPLETED : TASK_STATUS.PENDING,
-    createdAt: faker.date.past(),
-    updatedAt: faker.date.past(), // IMPROVE
-  };
-});
+import {
+  useCompletedTasks,
+  usePendingTasks,
+} from "./modules/tasks/hooks/use-tasks";
 
 export default function App() {
-  const pendingTodos = todos.filter((item) => !item.completedAt);
-  const completedTodos = todos.filter((item) => item.completedAt);
+  const { data: pendingTasks = [], isLoading: isLoadingPending } =
+    usePendingTasks();
+  const { data: completedTasks = [], isLoading: isLoadingCompleted } =
+    useCompletedTasks();
+
+  if (isLoadingPending || isLoadingCompleted) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Loading tasks...
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-xl px-4 py-8">
@@ -33,10 +32,10 @@ export default function App() {
 
       <main>
         <section className="mt-4">
-          <TaskList tasks={pendingTodos} />
+          <TaskList tasks={pendingTasks} />
         </section>
         <section className="mt-4">
-          <CompletedTasksAccordion tasks={completedTodos} />
+          <CompletedTasksAccordion tasks={completedTasks} />
         </section>
       </main>
     </div>
