@@ -8,8 +8,10 @@ export const db = new Dexie("todoapp_db") as Dexie & {
 };
 
 db.version(1).stores({
-  tasks: "id, isCompleted",
+  tasks: "id, [isCompleted+createdAt], [isCompleted+completedAt]",
 });
+
+// await db.delete();
 
 export const seedDatabase = async () => {
   const count = await db.tasks.count();
