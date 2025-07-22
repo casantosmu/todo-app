@@ -1,12 +1,14 @@
 import { CheckCircle2 } from "lucide-react";
-import type { Task } from "../models/task";
+import { usePendingTasks } from "../hooks/use-tasks";
 import { TaskItem } from "./task-item";
 
-interface TaskListProps {
-  tasks: Task[];
-}
+export const TaskList = () => {
+  const { data: tasks = [], isLoading } = usePendingTasks();
 
-export const TaskList = ({ tasks }: TaskListProps) => {
+  if (isLoading) {
+    return null;
+  }
+
   if (tasks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">

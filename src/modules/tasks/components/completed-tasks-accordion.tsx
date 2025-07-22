@@ -4,17 +4,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import type { Task } from "../models/task";
+import { useCompletedTasks } from "../hooks/use-tasks";
 import { TaskItem } from "./task-item";
 
-interface CompletedTasksAccordionProps {
-  tasks: Task[];
-}
+export const CompletedTasksAccordion = () => {
+  const { data: tasks = [], isLoading } = useCompletedTasks();
 
-export const CompletedTasksAccordion = ({
-  tasks,
-}: CompletedTasksAccordionProps) => {
-  if (tasks.length === 0) {
+  if (tasks.length === 0 || isLoading) {
     return null;
   }
 
