@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { taskService } from "../services/task-service";
 
 export const tasksQueryKeys = {
@@ -8,16 +8,29 @@ export const tasksQueryKeys = {
   completed: () => [...tasksQueryKeys.lists(), "completed"] as const,
 } as const;
 
-export function usePendingTasks() {
+export const useCreateTask = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (title: string) => taskService.createTask(title),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: tasksQueryKeys.pending(),
+      });
+    },
+  });
+};
+
+export const usePendingTasks = () => {
   return useQuery({
     queryKey: tasksQueryKeys.pending(),
     queryFn: () => taskService.getPendingTasks(),
   });
-}
+};
 
-export function useCompletedTasks() {
+export const useCompletedTasks = () => {
   return useQuery({
     queryKey: tasksQueryKeys.completed(),
     queryFn: () => taskService.getCompletedTasks(),
   });
-}
+};
