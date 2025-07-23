@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { TASK_STATUS, type Task } from "../models/task";
 import { taskService } from "../services/task-service";
 
 export const tasksQueryKeys = {
@@ -30,6 +31,22 @@ export const useToggleTaskStatus = () => {
       return queryClient.invalidateQueries({
         queryKey: tasksQueryKeys.lists(),
       });
+    },
+  });
+};
+
+export const useDeleteTask = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id: taskId }: Task) => taskService.deleteTask(taskId),
+    onSuccess: (_, task) => {
+      const queryKey =
+        task.isCompleted === TASK_STATUS.COMPLETED
+          ? tasksQueryKeys.completed()
+          : tasksQueryKeys.pending();
+
+      return queryClient.invalidateQueries({ queryKey });
     },
   });
 };

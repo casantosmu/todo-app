@@ -2,7 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 import { Trash2 } from "lucide-react";
-import { useToggleTaskStatus } from "../hooks/use-tasks";
+import { useDeleteTask, useToggleTaskStatus } from "../hooks/use-tasks";
 import type { Task } from "../models/task";
 
 const taskItemVariants = cva(
@@ -35,6 +35,7 @@ export const TaskItem = ({
   ...props
 }: TaskItemProps) => {
   const { mutate: toggleStatus } = useToggleTaskStatus();
+  const { mutate: deleteTask } = useDeleteTask();
 
   return (
     <div
@@ -73,6 +74,9 @@ export const TaskItem = ({
               type="button"
               aria-label={`Delete task "${task.title}"`}
               className="text-muted-foreground hover:text-destructive opacity-0 transition-all duration-150 group-hover:opacity-100"
+              onClick={() => {
+                deleteTask(task);
+              }}
             >
               <Trash2 className="h-5 w-5" />
             </button>

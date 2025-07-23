@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import Dexie from "dexie";
-import { TASK_STATUS, type Task } from "../models/task";
+import { DELETED_STATUS, TASK_STATUS, type Task } from "../models/task";
 
 export const taskService = {
   createTask(title: string) {
@@ -9,27 +9,37 @@ export const taskService = {
       id: crypto.randomUUID(),
       title,
       isCompleted: TASK_STATUS.PENDING,
+      isDeleted: DELETED_STATUS.NOT_DELETED,
       completedAt: null,
       createdAt: now,
       updatedAt: now,
+      deletedAt: null,
     };
     return db.tasks.add(newTask);
   },
 
   getPendingTasks() {
     const { PENDING } = TASK_STATUS;
+    const { NOT_DELETED } = DELETED_STATUS;
     return db.tasks
-      .where("[isCompleted+createdAt]")
-      .between([PENDING, Dexie.minKey], [PENDING, Dexie.maxKey])
+      .where("[isDeleted+isCompleted+createdAt]")
+      .between(
+        [NOT_DELETED, PENDING, Dexie.minKey],
+        [NOT_DELETED, PENDING, Dexie.maxKey],
+      )
       .reverse()
       .toArray();
   },
 
   getCompletedTasks() {
     const { COMPLETED } = TASK_STATUS;
+    const { NOT_DELETED } = DELETED_STATUS;
     return db.tasks
-      .where("[isCompleted+completedAt]")
-      .between([COMPLETED, Dexie.minKey], [COMPLETED, Dexie.maxKey])
+      .where("[isDeleted+isCompleted+completedAt]")
+      .between(
+        [NOT_DELETED, COMPLETED, Dexie.minKey],
+        [NOT_DELETED, COMPLETED, Dexie.maxKey],
+      )
       .reverse()
       .toArray();
   },
@@ -48,6 +58,13 @@ export const taskService = {
         completedAt: isCompleted ? null : now,
         updatedAt: now,
       });
+    });
+  },
+
+  async deleteTask(taskId: string) {
+    await db.tasks.update(taskId, {
+      isDeleted: DELETED_STATUS.DELETED,
+      deletedAt: new Date(),
     });
   },
 };
