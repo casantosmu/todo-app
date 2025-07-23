@@ -8,9 +8,9 @@ import { useCompletedTasks } from "../hooks/use-tasks";
 import { TaskItem } from "./task-item";
 
 export const CompletedTasksAccordion = () => {
-  const { data: tasks = [], isLoading } = useCompletedTasks();
+  const { data: tasks = [] } = useCompletedTasks();
 
-  if (tasks.length === 0 || isLoading) {
+  if (tasks.length === 0) {
     return null;
   }
 

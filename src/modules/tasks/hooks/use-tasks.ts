@@ -21,6 +21,19 @@ export const useCreateTask = () => {
   });
 };
 
+export const useToggleTaskStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (taskId: string) => taskService.toggleTaskStatus(taskId),
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: tasksQueryKeys.lists(),
+      });
+    },
+  });
+};
+
 export const usePendingTasks = () => {
   return useQuery({
     queryKey: tasksQueryKeys.pending(),

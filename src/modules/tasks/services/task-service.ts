@@ -33,4 +33,21 @@ export const taskService = {
       .reverse()
       .toArray();
   },
+
+  async toggleTaskStatus(taskId: string) {
+    await db.transaction("rw", db.tasks, async () => {
+      const task = await db.tasks.get(taskId);
+      if (!task) {
+        return;
+      }
+
+      const now = new Date();
+      const isCompleted = task.isCompleted === TASK_STATUS.COMPLETED;
+      await db.tasks.update(taskId, {
+        isCompleted: isCompleted ? TASK_STATUS.PENDING : TASK_STATUS.COMPLETED,
+        completedAt: isCompleted ? null : now,
+        updatedAt: now,
+      });
+    });
+  },
 };

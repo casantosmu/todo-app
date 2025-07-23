@@ -2,6 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 import { Trash2 } from "lucide-react";
+import { useToggleTaskStatus } from "../hooks/use-tasks";
 import type { Task } from "../models/task";
 
 const taskItemVariants = cva(
@@ -33,6 +34,8 @@ export const TaskItem = ({
   className,
   ...props
 }: TaskItemProps) => {
+  const { mutate: toggleStatus } = useToggleTaskStatus();
+
   return (
     <li
       ref={ref}
@@ -45,6 +48,9 @@ export const TaskItem = ({
     >
       <Checkbox
         checked={!!task.completedAt}
+        onCheckedChange={() => {
+          toggleStatus(task.id);
+        }}
         aria-label={`Mark task "${task.title}" as ${
           task.completedAt ? "incomplete" : "complete"
         }`}
