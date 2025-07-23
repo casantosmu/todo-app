@@ -21,8 +21,8 @@ const taskItemVariants = cva(
 );
 
 interface TaskItemProps
-  extends React.LiHTMLAttributes<HTMLLIElement>,
-    React.RefAttributes<HTMLLIElement> {
+  extends React.LiHTMLAttributes<HTMLDivElement>,
+    React.RefAttributes<HTMLDivElement> {
   task: Task;
   isEditing?: boolean;
 }
@@ -37,7 +37,7 @@ export const TaskItem = ({
   const { mutate: toggleStatus } = useToggleTaskStatus();
 
   return (
-    <li
+    <div
       ref={ref}
       className={cn(
         taskItemVariants({ completed: !!task.completedAt }),
@@ -79,6 +79,6 @@ export const TaskItem = ({
           </div>
         </>
       )}
-    </li>
+    </div>
   );
 };
