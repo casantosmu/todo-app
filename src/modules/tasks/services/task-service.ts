@@ -78,4 +78,11 @@ export const taskService = {
       deletedAt: new Date(),
     });
   },
+
+  async updateTask(taskId: string, title: string) {
+    await db.tasks.update(taskId, {
+      title,
+      updatedAt: new Date(),
+    });
+  },
 };
