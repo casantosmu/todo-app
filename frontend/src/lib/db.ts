@@ -23,7 +23,7 @@ export const seedDatabase = async () => {
     return;
   }
 
-  const todos: Task[] = Array.from({ length: 30 }, () => {
+  const todos: Task[] = Array.from({ length: 50 }, () => {
     const isCompleted = faker.datatype.boolean();
     const isDeleted = faker.datatype.boolean();
     return {
