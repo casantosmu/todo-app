@@ -75,7 +75,7 @@ export const TaskItem = ({
               aria-label={`Delete task "${task.title}"`}
               className="text-muted-foreground hover:text-destructive opacity-0 transition-all duration-150 group-hover:opacity-100"
               onClick={() => {
-                deleteTask(task);
+                deleteTask(task.id);
               }}
             >
               <Trash2 className="h-5 w-5" />

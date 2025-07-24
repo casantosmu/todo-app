@@ -44,6 +44,17 @@ export const taskService = {
       .toArray();
   },
 
+  getTasksByStatus() {
+    return db.transaction("r", db.tasks, async () => {
+      const [pending, completed] = await Promise.all([
+        this.getPendingTasks(),
+        this.getCompletedTasks(),
+      ]);
+
+      return { pending, completed };
+    });
+  },
+
   async toggleTaskStatus(taskId: string) {
     await db.transaction("rw", db.tasks, async () => {
       const task = await db.tasks.get(taskId);

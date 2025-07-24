@@ -1,9 +1,11 @@
-import { usePendingTasks } from "../hooks/use-tasks";
+import type { Task } from "../models/task";
 import { TaskItem } from "./task-item";
 
-export const TaskList = () => {
-  const { data: tasks = [] } = usePendingTasks();
+interface TaskListProps {
+  tasks: Task[];
+}
 
+export const TaskList = ({ tasks }: TaskListProps) => {
   if (tasks.length === 0) {
     return null;
   }

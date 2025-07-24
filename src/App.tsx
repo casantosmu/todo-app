@@ -1,7 +1,6 @@
 import { TopNavbar } from "./components/shared/top-navbar";
-import { CompletedTasksAccordion } from "./modules/tasks/components/completed-tasks-accordion";
 import { QuickAddBar } from "./modules/tasks/components/quick-add-bar";
-import { TaskList } from "./modules/tasks/components/task-list";
+import { TasksContainer } from "./modules/tasks/components/tasks-container";
 
 export default function App() {
   return (
@@ -14,12 +13,7 @@ export default function App() {
       </header>
 
       <main>
-        <section className="mt-4">
-          <TaskList />
-        </section>
-        <section className="mt-4">
-          <CompletedTasksAccordion />
-        </section>
+        <TasksContainer />
       </main>
     </div>
   );
