@@ -68,7 +68,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
       <Checkbox
         checked={!!task.completedAt}
         onCheckedChange={() => {
-          toggleStatus(task.id);
+          toggleStatus(task);
         }}
         aria-label={`Mark task "${task.title}" as ${
           task.completedAt ? "incomplete" : "complete"

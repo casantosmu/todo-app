@@ -1,9 +1,9 @@
-import { db } from "@/lib/db";
+import { addWithSync, db, deleteWithSync, updateWithSync } from "@/lib/db";
 import Dexie from "dexie";
 import { DELETED_STATUS, TASK_STATUS, type Task } from "../models/task";
 
 export const taskService = {
-  createTask(title: string) {
+  async addTask(title: string) {
     const now = new Date();
     const newTask: Task = {
       id: crypto.randomUUID(),
@@ -15,7 +15,8 @@ export const taskService = {
       updatedAt: now,
       deletedAt: null,
     };
-    return db.tasks.add(newTask);
+
+    await addWithSync(db.tasks, newTask);
   },
 
   getPendingTasks() {
@@ -55,32 +56,25 @@ export const taskService = {
     });
   },
 
-  async toggleTaskStatus(taskId: string) {
-    await db.transaction("rw", db.tasks, async () => {
-      const task = await db.tasks.get(taskId);
-      if (!task) {
-        return;
-      }
+  async toggleTaskStatus(taskId: string, isCompleted: boolean) {
+    const now = new Date();
 
-      const now = new Date();
-      const isCompleted = task.isCompleted === TASK_STATUS.COMPLETED;
-      await db.tasks.update(taskId, {
-        isCompleted: isCompleted ? TASK_STATUS.PENDING : TASK_STATUS.COMPLETED,
-        completedAt: isCompleted ? null : now,
-        updatedAt: now,
-      });
+    await updateWithSync(db.tasks, taskId, {
+      isCompleted: isCompleted ? TASK_STATUS.PENDING : TASK_STATUS.COMPLETED,
+      completedAt: isCompleted ? null : now,
+      updatedAt: now,
     });
   },
 
   async deleteTask(taskId: string) {
-    await db.tasks.update(taskId, {
+    await deleteWithSync(db.tasks, taskId, {
       isDeleted: DELETED_STATUS.DELETED,
       deletedAt: new Date(),
     });
   },
 
   async updateTask(taskId: string, title: string) {
-    await db.tasks.update(taskId, {
+    await updateWithSync(db.tasks, taskId, {
       title,
       updatedAt: new Date(),
     });

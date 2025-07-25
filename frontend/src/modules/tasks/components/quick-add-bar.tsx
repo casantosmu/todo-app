@@ -2,14 +2,14 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { useRef } from "react";
-import { useCreateTask } from "../hooks/use-tasks";
+import { useAddTask } from "../hooks/use-tasks";
 
 export const QuickAddBar = ({
   className,
   ...props
 }: React.ComponentProps<typeof Input>) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { mutate } = useCreateTask();
+  const { mutate } = useAddTask();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Task } from "../models/task";
 import { taskService } from "../services/task-service";
 
 const TASK_QUERY_KEY = ["tasks"] as const;
@@ -10,11 +11,11 @@ export const useTasksByStatus = () => {
   });
 };
 
-export const useCreateTask = () => {
+export const useAddTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (title: string) => taskService.createTask(title),
+    mutationFn: (title: string) => taskService.addTask(title),
     onSuccess: () => {
       return queryClient.invalidateQueries({ queryKey: TASK_QUERY_KEY });
     },
@@ -25,7 +26,8 @@ export const useToggleTaskStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (taskId: string) => taskService.toggleTaskStatus(taskId),
+    mutationFn: (task: Task) =>
+      taskService.toggleTaskStatus(task.id, !!task.completedAt),
     onSuccess: () => {
       return queryClient.invalidateQueries({ queryKey: TASK_QUERY_KEY });
     },
