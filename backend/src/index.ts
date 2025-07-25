@@ -1,3 +1,4 @@
+import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import Fastify from "fastify";
 import configPlugin from "./plugins/config.js";
 import dbPlugin from "./plugins/db.js";
@@ -5,6 +6,7 @@ import gracefulShutdownPlugin from "./plugins/graceful-shutdown.js";
 import syncRoute from "./routes/sync.js";
 
 const server = Fastify({
+  disableRequestLogging: true,
   logger: {
     transport: {
       target: "pino-pretty",
@@ -14,7 +16,7 @@ const server = Fastify({
       },
     },
   },
-});
+}).withTypeProvider<TypeBoxTypeProvider>();
 
 // Register plugins
 server.register(configPlugin);

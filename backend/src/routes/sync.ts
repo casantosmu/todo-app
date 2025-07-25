@@ -1,13 +1,26 @@
-import type { FastifyInstance, FastifyPluginOptions } from "fastify";
+import type { FastifyPluginCallbackTypebox } from "@fastify/type-provider-typebox";
+import { SyncBodySchema, SyncResponseSchema } from "../schemas/sync.js";
 
-export default function syncRoute(
-  server: FastifyInstance,
-  options: FastifyPluginOptions,
-  done: (err?: Error) => void,
-) {
-  server.get("/", () => {
-    return server.syncService.helloWorld();
-  });
+const syncRoute: FastifyPluginCallbackTypebox = (server, options, done) => {
+  server.post(
+    "/v1/sync",
+    {
+      schema: {
+        body: SyncBodySchema,
+        response: {
+          200: SyncResponseSchema,
+        },
+      },
+    },
+    () => {
+      return {
+        newSyncToken: 0,
+        changes: [],
+      };
+    },
+  );
 
   done();
-}
+};
+
+export default syncRoute;

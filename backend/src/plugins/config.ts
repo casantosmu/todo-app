@@ -1,5 +1,6 @@
+import { AssertError, Value } from "@sinclair/typebox/value";
 import fastifyPlugin from "fastify-plugin";
-import z from "zod";
+import { ConfigSchema, type Config } from "../schemas/config.js";
 
 declare module "fastify" {
   export interface FastifyInstance {
@@ -7,33 +8,23 @@ declare module "fastify" {
   }
 }
 
-const configSchema = z.object({
-  NODE_ENV: z
-    .enum(["development", "production", "test"])
-    .default("development"),
-  PORT: z.coerce.number().int().default(3000),
-  HOST: z.string().default("0.0.0.0"),
-  DB_PATH: z.string().default("sync_tasks.db"),
-});
-
-type Config = z.infer<typeof configSchema>;
-
 /**
  * This plugin decorates the Fastify instance with the application configuration.
  */
 export default fastifyPlugin((server, options, done) => {
-  const parsedConfig = configSchema.safeParse(process.env);
-
-  if (!parsedConfig.success) {
-    const errorMessages = parsedConfig.error.issues
+  try {
+    const config = Value.Parse(ConfigSchema, process.env);
+    server.decorate("config", config);
+    done();
+  } catch (error) {
+    const assertError = error as AssertError;
+    const errorMessages = [...assertError.Errors()]
       .map((issue) => {
-        return `- ${issue.path.join(".")}: ${issue.message}`;
+        const path = issue.path.substring(1);
+        return `- ${path}: ${issue.message}`;
       })
       .join("\n");
 
-    throw new Error(`Invalid environment variables:\n${errorMessages}`);
+    done(new Error(`Invalid environment variables:\n${errorMessages}`));
   }
-
-  server.decorate("config", parsedConfig.data);
-  done();
 });
