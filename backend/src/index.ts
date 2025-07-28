@@ -7,6 +7,11 @@ import syncRoute from "./routes/sync.js";
 
 const server = Fastify({
   disableRequestLogging: true,
+  ajv: {
+    customOptions: {
+      removeAdditional: "all",
+    },
+  },
   logger: {
     transport: {
       target: "pino-pretty",
@@ -24,7 +29,7 @@ server.register(dbPlugin);
 server.register(gracefulShutdownPlugin);
 
 // Register routes
-server.register(syncRoute);
+server.register(syncRoute, { prefix: "/api/sync" });
 
 try {
   await server.ready();

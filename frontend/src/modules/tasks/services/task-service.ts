@@ -1,6 +1,9 @@
 import { addWithSync, db, deleteWithSync, updateWithSync } from "@/lib/db";
+import { omit } from "@/lib/utils";
 import Dexie from "dexie";
 import { DELETED_STATUS, TASK_STATUS, type Task } from "../models/task";
+
+const TASK_SYNC_EXCLUDE_FIELDS = ["id", "isCompleted", "isDeleted"] as const;
 
 export const taskService = {
   async addTask(title: string) {
@@ -16,7 +19,8 @@ export const taskService = {
       deletedAt: null,
     };
 
-    await addWithSync(db.tasks, newTask);
+    const syncData = omit(newTask, TASK_SYNC_EXCLUDE_FIELDS);
+    await addWithSync(db.tasks, newTask, syncData);
   },
 
   getPendingTasks() {
@@ -59,24 +63,33 @@ export const taskService = {
   async toggleTaskStatus(taskId: string, isCompleted: boolean) {
     const now = new Date();
 
-    await updateWithSync(db.tasks, taskId, {
+    const dbData: Partial<Task> = {
       isCompleted: isCompleted ? TASK_STATUS.PENDING : TASK_STATUS.COMPLETED,
       completedAt: isCompleted ? null : now,
       updatedAt: now,
-    });
+    };
+
+    const syncData = omit(dbData, TASK_SYNC_EXCLUDE_FIELDS);
+    await updateWithSync(db.tasks, taskId, dbData, syncData);
   },
 
   async deleteTask(taskId: string) {
-    await deleteWithSync(db.tasks, taskId, {
+    const dbData: Partial<Task> = {
       isDeleted: DELETED_STATUS.DELETED,
       deletedAt: new Date(),
-    });
+    };
+
+    const syncData = omit(dbData, TASK_SYNC_EXCLUDE_FIELDS);
+    await deleteWithSync(db.tasks, taskId, dbData, syncData);
   },
 
   async updateTask(taskId: string, title: string) {
-    await updateWithSync(db.tasks, taskId, {
+    const dbData: Partial<Task> = {
       title,
       updatedAt: new Date(),
-    });
+    };
+
+    const syncData = omit(dbData, TASK_SYNC_EXCLUDE_FIELDS);
+    await updateWithSync(db.tasks, taskId, dbData, syncData);
   },
 };

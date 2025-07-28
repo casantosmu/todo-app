@@ -1,14 +1,14 @@
 export interface SyncChange {
   id: number;
-  operation: "CREATE" | "UPDATE" | "DELETE";
-  entityId: string;
-  entityName: string;
-  value: unknown;
+  operation: "INSERT" | "UPDATE" | "DELETE";
+  tableName: string;
+  recordId: string;
+  data: Record<string, unknown>;
   timestamp: Date;
 }
 
 export const SYNC_OPERATION = {
-  CREATE: "CREATE",
+  INSERT: "INSERT",
   UPDATE: "UPDATE",
   DELETE: "DELETE",
 } as const;

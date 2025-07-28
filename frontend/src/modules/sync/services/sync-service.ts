@@ -1,5 +1,5 @@
+import { getConfig } from "@/config";
 import { db } from "@/lib/db";
-import { sleep } from "@/lib/utils";
 import type { SyncChange } from "../models/sync-change";
 
 export const syncService = {
@@ -16,7 +16,10 @@ export const syncService = {
           return;
         }
 
-        const success = await this._sendToBackend(changes);
+        const success = await this._sendToBackend(
+          metadata.lastSyncToken,
+          changes,
+        );
 
         if (success) {
           await db.syncMetadata.put({
@@ -34,10 +37,26 @@ export const syncService = {
     await navigator.locks.request("SYNC_LOCK", { ifAvailable: false }, fn);
   },
 
-  async _sendToBackend(changes: SyncChange[]) {
+  async _sendToBackend(lastSyncToken: number, changes: SyncChange[]) {
     try {
-      await sleep(1_000);
-      console.log("Simulating server sync...", changes);
+      const baseUrl = (await getConfig()).syncServiceUrl;
+      const response = await fetch(`${baseUrl}/sync`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ lastSyncToken, changes }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.statusText}`);
+      }
+
+      console.log("_sendToBackend", {
+        body: { changes },
+        response: (await response.json()) as unknown,
+      });
+
       return true;
     } catch (error) {
       console.error("Failed to send changes to backend:", error);

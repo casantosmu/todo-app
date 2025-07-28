@@ -3,7 +3,7 @@ import { SyncBodySchema, SyncResponseSchema } from "../schemas/sync.js";
 
 const syncRoute: FastifyPluginCallbackTypebox = (server, options, done) => {
   server.post(
-    "/v1/sync",
+    "/",
     {
       schema: {
         body: SyncBodySchema,
@@ -12,7 +12,9 @@ const syncRoute: FastifyPluginCallbackTypebox = (server, options, done) => {
         },
       },
     },
-    () => {
+    (request) => {
+      request.log.info(request.body, "req.body");
+
       return {
         newSyncToken: 0,
         changes: [],
