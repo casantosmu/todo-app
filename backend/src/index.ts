@@ -1,3 +1,4 @@
+import cors from "@fastify/cors";
 import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import Fastify from "fastify";
 import configPlugin from "./plugins/config.js";
@@ -24,6 +25,7 @@ const server = Fastify({
 }).withTypeProvider<TypeBoxTypeProvider>();
 
 // Register plugins
+server.register(cors);
 server.register(configPlugin);
 server.register(dbPlugin);
 server.register(gracefulShutdownPlugin);

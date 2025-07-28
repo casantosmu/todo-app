@@ -1,4 +1,4 @@
-import { getConfig } from "@/config";
+import { getConfig } from "@/lib/config";
 import { db } from "@/lib/db";
 import type { SyncChange } from "../models/sync-change";
 
