@@ -9,6 +9,30 @@ declare module "fastify" {
   }
 }
 
+const initSchemas = (db: Database.Database) => {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS sync_logs (
+      id INTEGER PRIMARY KEY NOT NULL,
+      operation TEXT NOT NULL,
+      table_name TEXT NOT NULL,
+      record_id TEXT NOT NULL,
+      data JSON NOT NULL,
+      timestamp TEXT NOT NULL
+    );
+  `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS tasks (
+      id TEXT PRIMARY KEY NOT NULL,
+      title TEXT NOT NULL,
+      completed_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      deleted_at TEXT
+    );
+  `);
+};
+
 /**
  * Connects to the database and decorates the Fastify instance with it.
  */
@@ -23,16 +47,12 @@ export default fastifyPlugin((server, options, done) => {
   const db = new Database(dbPath);
   server.log.info(`Database connected at ${dbPath}`);
 
-  // Set WAL mode for better concurrency
+  // PRAGMA settings for performance and consistency
   db.pragma("journal_mode = WAL");
+  db.pragma("synchronous = NORMAL");
+  db.pragma("foreign_keys = ON");
 
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS sync_logs (
-      id INTEGER PRIMARY KEY NOT NULL,
-      payload JSON NOT NULL
-    );
-  `;
-  db.exec(createTableQuery);
+  initSchemas(db);
   server.log.info("Database schema initialized.");
 
   server.decorate("db", db);

@@ -78,9 +78,12 @@ export const taskService = {
   },
 
   async deleteTask(taskId: string) {
+    const now = new Date();
+
     const dbData: Partial<Task> = {
       isDeleted: DELETED_STATUS.DELETED,
-      deletedAt: new Date(),
+      deletedAt: now,
+      updatedAt: now,
     };
 
     const syncData = omit(dbData, TASK_DERIVED_FIELDS);

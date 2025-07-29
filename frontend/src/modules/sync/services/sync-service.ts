@@ -53,7 +53,7 @@ export const syncService = {
       }
 
       console.log("_sendToBackend", {
-        body: { changes },
+        body: { lastSyncToken, changes },
         response: (await response.json()) as unknown,
       });
 
