@@ -6,10 +6,13 @@ export interface Task {
   updatedAt: Date;
   deletedAt: Date | null;
 
-  // The derived fields for efficient querying.
+  // Dexie/IndexedDB cannot index boolean or null values directly. These derived
+  // numeric fields (0/1) are used to create efficient compound indexes for querying.
   isCompleted: 0 | 1;
   isDeleted: 0 | 1;
 }
+
+export const TASK_DERIVED_FIELDS = ["isCompleted", "isDeleted"] as const;
 
 export const TASK_STATUS = {
   PENDING: 0,

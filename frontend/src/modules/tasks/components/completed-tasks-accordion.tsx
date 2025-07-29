@@ -22,7 +22,9 @@ export const CompletedTasksAccordion = ({
     <Accordion type="single" collapsible>
       <AccordionItem value="completed-tasks">
         <AccordionTrigger className="text-muted-foreground hover:no-underline">
-          {`View ${tasks.length.toString()} completed tasks`}
+          {`View ${tasks.length.toString()} completed ${
+            tasks.length === 1 ? "task" : "tasks"
+          }`}
         </AccordionTrigger>
         <AccordionContent>
           <ul className="space-y-2">

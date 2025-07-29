@@ -109,18 +109,16 @@ export const TaskItem = ({ task }: TaskItemProps) => {
           >
             {task.title}
           </button>
-          <div className="flex items-center">
-            <button
-              type="button"
-              aria-label={`Delete task "${task.title}"`}
-              className="text-muted-foreground hover:text-destructive opacity-0 transition-all duration-150 group-hover:opacity-100"
-              onClick={() => {
-                deleteTask(task.id);
-              }}
-            >
-              <Trash2 className="h-5 w-5" />
-            </button>
-          </div>
+          <button
+            type="button"
+            aria-label={`Delete task "${task.title}"`}
+            className="text-muted-foreground hover:text-destructive opacity-0 transition-all duration-150 group-hover:opacity-100"
+            onClick={() => {
+              deleteTask(task.id);
+            }}
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
         </>
       )}
     </div>

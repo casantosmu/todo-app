@@ -1,13 +1,17 @@
 import { addWithSync, db, deleteWithSync, updateWithSync } from "@/lib/db";
 import { omit } from "@/lib/utils";
 import Dexie from "dexie";
-import { DELETED_STATUS, TASK_STATUS, type Task } from "../models/task";
-
-const TASK_SYNC_EXCLUDE_FIELDS = ["id", "isCompleted", "isDeleted"] as const;
+import {
+  DELETED_STATUS,
+  TASK_DERIVED_FIELDS,
+  TASK_STATUS,
+  type Task,
+} from "../models/task";
 
 export const taskService = {
   async addTask(title: string) {
     const now = new Date();
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title,
@@ -19,7 +23,7 @@ export const taskService = {
       deletedAt: null,
     };
 
-    const syncData = omit(newTask, TASK_SYNC_EXCLUDE_FIELDS);
+    const syncData = omit(newTask, TASK_DERIVED_FIELDS);
     await addWithSync(db.tasks, newTask, syncData);
   },
 
@@ -69,7 +73,7 @@ export const taskService = {
       updatedAt: now,
     };
 
-    const syncData = omit(dbData, TASK_SYNC_EXCLUDE_FIELDS);
+    const syncData = omit(dbData, TASK_DERIVED_FIELDS);
     await updateWithSync(db.tasks, taskId, dbData, syncData);
   },
 
@@ -79,7 +83,7 @@ export const taskService = {
       deletedAt: new Date(),
     };
 
-    const syncData = omit(dbData, TASK_SYNC_EXCLUDE_FIELDS);
+    const syncData = omit(dbData, TASK_DERIVED_FIELDS);
     await deleteWithSync(db.tasks, taskId, dbData, syncData);
   },
 
@@ -89,7 +93,7 @@ export const taskService = {
       updatedAt: new Date(),
     };
 
-    const syncData = omit(dbData, TASK_SYNC_EXCLUDE_FIELDS);
+    const syncData = omit(dbData, TASK_DERIVED_FIELDS);
     await updateWithSync(db.tasks, taskId, dbData, syncData);
   },
 };
