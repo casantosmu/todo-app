@@ -1,6 +1,6 @@
 import { AssertError, Value } from "@sinclair/typebox/value";
 import fastifyPlugin from "fastify-plugin";
-import { ConfigSchema, type Config } from "../schemas/config.js";
+import { ConfigSchema, type Config } from "./config-schema.js";
 
 declare module "fastify" {
   export interface FastifyInstance {

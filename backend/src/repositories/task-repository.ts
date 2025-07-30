@@ -1,15 +1,7 @@
 import type { Database, Statement } from "better-sqlite3";
 import camelcaseKeys from "camelcase-keys";
 import decamelizeKeys from "decamelize-keys";
-
-interface Task {
-  id: string;
-  title: string;
-  completedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-}
+import type { Task } from "../schemas/task.js";
 
 export default class TaskRepository {
   private readonly getStmt: Statement;

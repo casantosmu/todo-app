@@ -11,7 +11,7 @@ export const ConfigSchema = Type.Object({
   ),
   PORT: Type.Number({ default: 3000 }),
   HOST: Type.String({ default: "localhost" }),
-  DB_PATH: Type.String({ default: "sync_tasks.db" }),
+  DB_PATH: Type.String({ default: "./data/db.sqlite" }),
 });
 
 export type Config = Static<typeof ConfigSchema>;
