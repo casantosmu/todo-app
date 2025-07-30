@@ -22,7 +22,7 @@ export default class SyncService {
     );
 
     const transaction = this.db.transaction(() => {
-      let newSyncToken = 0;
+      let newSyncToken: number | bigint = 0;
 
       for (const change of request.changes) {
         this.log.debug(

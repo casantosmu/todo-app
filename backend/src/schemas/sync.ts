@@ -1,4 +1,5 @@
 import { Type, type Static } from "@sinclair/typebox";
+import { TypeNumeric } from "./_utils.js";
 import {
   SyncTaskDeleteSchema,
   SyncTaskInsertSchema,
@@ -17,7 +18,7 @@ export const SyncRequestSchema = Type.Object({
 });
 
 export const SyncResponseSchema = Type.Object({
-  newSyncToken: Type.Integer(),
+  newSyncToken: TypeNumeric(),
 });
 
 export type SyncChange = Static<typeof SyncChangeSchema>;

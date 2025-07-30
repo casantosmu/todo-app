@@ -3,17 +3,28 @@ import camelcaseKeys from "camelcase-keys";
 import decamelizeKeys from "decamelize-keys";
 import type { Task } from "../schemas/task.js";
 
+// issue: https://github.com/sindresorhus/camelcase-keys/issues/114
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type TaskRow = {
+  id: string;
+  title: string;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+};
+
 export default class TaskRepository {
-  private readonly getStmt: Statement;
-  private readonly insertStmt: Statement;
-  private readonly softDeleteStmt: Statement;
+  private readonly getStmt: Statement<[string], TaskRow>;
+  private readonly insertStmt: Statement<TaskRow>;
+  private readonly softDeleteStmt: Statement<[string, string, string]>;
 
   constructor(private readonly db: Database) {
     this.getStmt = this.db.prepare("SELECT * FROM tasks WHERE id = ?;");
 
     this.insertStmt = this.db.prepare(`
       INSERT INTO tasks (id, title, completed_at, created_at, updated_at, deleted_at)
-      VALUES (?, ?, ?, ?, ?, ?);
+      VALUES (:id, :title, :completed_at, :created_at, :updated_at, :deleted_at);
     `);
 
     this.softDeleteStmt = this.db.prepare(`
@@ -28,18 +39,18 @@ export default class TaskRepository {
     if (!result) {
       return null;
     }
-    return camelcaseKeys(result as Record<string, unknown>) as unknown as Task;
+    return camelcaseKeys(result);
   }
 
   insert(data: Task) {
-    this.insertStmt.run([
-      data.id,
-      data.title,
-      data.completedAt,
-      data.createdAt,
-      data.updatedAt,
-      data.deletedAt,
-    ]);
+    this.insertStmt.run({
+      id: data.id,
+      title: data.title,
+      completed_at: data.completedAt,
+      created_at: data.createdAt,
+      updated_at: data.updatedAt,
+      deleted_at: data.deletedAt,
+    });
   }
 
   update(id: string, data: Partial<Omit<Task, "id">>) {
