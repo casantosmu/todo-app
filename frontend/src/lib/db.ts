@@ -22,21 +22,20 @@ db.version(1).stores({
 // await db.delete();
 
 /**
- * Creates an entity and logs a specific sync payload in a single transaction.
+ * Creates an entity and logs the operation in a single transaction.
  */
 export const addWithSync = <T extends { id: string }, TKey extends keyof T>(
   table: EntityTable<T, TKey>,
-  dbData: T,
-  syncData: Record<string, unknown>,
+  data: T,
 ) => {
   return db.transaction("rw", [table, db.syncLogs], async () => {
-    const result = await table.add(dbData);
+    const result = await table.add(data);
 
     await db.syncLogs.add({
       operation: SYNC_OPERATION.INSERT,
       tableName: table.name,
-      recordId: dbData.id,
-      data: syncData,
+      recordId: data.id,
+      data,
       timestamp: new Date(),
     });
     return result;
@@ -44,22 +43,21 @@ export const addWithSync = <T extends { id: string }, TKey extends keyof T>(
 };
 
 /**
- * Updates an entity and logs a specific sync payload in a single transaction.
+ * Updates an entity and logs the operation in a single transaction.
  */
 export const updateWithSync = <T, TKey extends string, TInsertType>(
   table: Table<T, TKey, TInsertType>,
   key: TKey,
-  dbData: UpdateSpec<TInsertType>,
-  syncData: UpdateSpec<TInsertType>,
+  data: UpdateSpec<TInsertType>,
 ) => {
   return db.transaction("rw", [table, db.syncLogs], async () => {
-    const result = await table.update(key, dbData);
+    const result = await table.update(key, data);
 
     await db.syncLogs.add({
       operation: SYNC_OPERATION.UPDATE,
       tableName: table.name,
       recordId: key,
-      data: syncData,
+      data,
       timestamp: new Date(),
     });
     return result;
@@ -67,22 +65,21 @@ export const updateWithSync = <T, TKey extends string, TInsertType>(
 };
 
 /**
- * Soft-deletes an entity and logs a specific sync payload in a single transaction.
+ * Soft-deletes an entity by updating it and logs the operation in a single transaction.
  */
 export const deleteWithSync = <T, TKey extends string, TInsertType>(
   table: Table<T, TKey, TInsertType>,
   key: TKey,
-  dbData: UpdateSpec<TInsertType>,
-  syncData: UpdateSpec<TInsertType>,
+  data: UpdateSpec<TInsertType>,
 ) => {
   return db.transaction("rw", [table, db.syncLogs], async () => {
-    const result = await table.update(key, dbData);
+    const result = await table.update(key, data);
 
     await db.syncLogs.add({
       operation: SYNC_OPERATION.DELETE,
       tableName: table.name,
       recordId: key,
-      data: syncData,
+      data,
       timestamp: new Date(),
     });
     return result;

@@ -12,8 +12,6 @@ export interface Task {
   isDeleted: 0 | 1;
 }
 
-export const TASK_DERIVED_FIELDS = ["isCompleted", "isDeleted"] as const;
-
 export const TASK_STATUS = {
   PENDING: 0,
   COMPLETED: 1,

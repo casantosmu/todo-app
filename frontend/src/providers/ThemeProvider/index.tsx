@@ -1,21 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
-import { ThemeContext, type Theme } from "./context";
+import { useEffect, useMemo, useState, type PropsWithChildren } from "react";
+import { ThemeContext, themes, type Theme } from "./context";
 
-interface ThemeProviderProps {
-  children: React.ReactNode;
-  defaultTheme?: Theme;
-  storageKey?: string;
-}
+const STORAGE_KEY = "ui-theme";
 
-export function ThemeProvider({
-  children,
-  defaultTheme = "system",
-  storageKey = "vite-ui-theme",
-  ...props
-}: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme | null) ?? defaultTheme,
-  );
+const isTheme = (value: unknown): value is Theme => {
+  return typeof value === "string" && themes.includes(value as Theme);
+};
+
+export const ThemeProvider = ({ children }: PropsWithChildren) => {
+  const [theme, setTheme] = useState<Theme>(() => {
+    const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+    if (isTheme(storedTheme)) {
+      return storedTheme;
+    }
+
+    return "system";
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -39,16 +40,12 @@ export function ThemeProvider({
     () => ({
       theme,
       setTheme: (theme: Theme) => {
-        localStorage.setItem(storageKey, theme);
+        localStorage.setItem(STORAGE_KEY, theme);
         setTheme(theme);
       },
     }),
-    [storageKey, theme],
+    [theme],
   );
 
-  return (
-    <ThemeContext {...props} value={value}>
-      {children}
-    </ThemeContext>
-  );
-}
+  return <ThemeContext value={value}>{children}</ThemeContext>;
+};

@@ -1,13 +1,9 @@
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { useRef } from "react";
 import { useAddTask } from "../hooks/use-tasks";
 
-export const QuickAddBar = ({
-  className,
-  ...props
-}: React.ComponentProps<typeof Input>) => {
+export const QuickAddBar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate } = useAddTask();
 
@@ -30,20 +26,12 @@ export const QuickAddBar = ({
   };
 
   return (
-    <form
-      className={cn("relative flex items-center", className)}
-      onSubmit={handleSubmit}
-    >
+    <form className="relative flex items-center" onSubmit={handleSubmit}>
       <Plus
         className="text-muted-foreground absolute left-3 h-4 w-4"
         aria-hidden="true"
       />
-      <Input
-        ref={inputRef}
-        placeholder="Add a new task..."
-        className="pl-9"
-        {...props}
-      />
+      <Input ref={inputRef} placeholder="Add a new task..." className="pl-9" />
     </form>
   );
 };
