@@ -4,6 +4,7 @@ import Fastify from "fastify";
 import configPlugin from "./plugins/config.js";
 import dbPlugin from "./plugins/db.js";
 import gracefulShutdownPlugin from "./plugins/graceful-shutdown.js";
+import loggingPlugin from "./plugins/logging.js";
 import syncRoute from "./routes/sync.js";
 
 const server = Fastify({
@@ -14,11 +15,15 @@ const server = Fastify({
     },
   },
   logger: {
+    level: process.env.LOG_LEVEL ?? "info",
+    errorKey: "error",
+    messageKey: "message",
     transport: {
       target: "pino-pretty",
       options: {
         translateTime: "HH:MM:ss Z",
         ignore: "pid,hostname",
+        messageKey: "message",
       },
     },
   },
@@ -29,6 +34,7 @@ server.register(cors);
 server.register(configPlugin);
 server.register(dbPlugin);
 server.register(gracefulShutdownPlugin);
+server.register(loggingPlugin);
 
 // Register routes
 server.register(syncRoute, { prefix: "/api/sync" });

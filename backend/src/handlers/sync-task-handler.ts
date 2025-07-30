@@ -1,3 +1,4 @@
+import type { FastifyBaseLogger } from "fastify";
 import type TaskRepository from "../repositories/task-repository.js";
 import type {
   SyncTaskDelete,
@@ -7,7 +8,10 @@ import type {
 import type { SyncChange } from "../schemas/sync.js";
 
 export default class SyncTaskHandler {
-  constructor(private readonly taskRepo: TaskRepository) {}
+  constructor(
+    private readonly log: FastifyBaseLogger,
+    private readonly taskRepo: TaskRepository,
+  ) {}
 
   handleChange(change: SyncChange) {
     const { operation, recordId, data } = change;
@@ -27,6 +31,7 @@ export default class SyncTaskHandler {
 
   private handleInsert(recordId: string, data: SyncTaskInsert["data"]) {
     if (this.taskRepo.getById(recordId)) {
+      this.log.warn({ recordId }, "INSERT ignored: Task already exists");
       return;
     }
 
@@ -36,10 +41,12 @@ export default class SyncTaskHandler {
   private handleUpdate(recordId: string, data: SyncTaskUpdate["data"]) {
     const existing = this.taskRepo.getById(recordId);
     if (!existing) {
+      this.log.warn({ recordId }, "UPDATE ignored: Task not found");
       return;
     }
 
     if (this.shouldIgnoreChange(existing.updatedAt, data.updatedAt)) {
+      this.log.warn({ recordId }, "UPDATE ignored: Incoming task is older");
       return;
     }
 
@@ -49,10 +56,12 @@ export default class SyncTaskHandler {
   private handleDelete(recordId: string, data: SyncTaskDelete["data"]) {
     const existing = this.taskRepo.getById(recordId);
     if (!existing) {
+      this.log.warn({ recordId }, "DELETE ignored: Task not found");
       return;
     }
 
     if (this.shouldIgnoreChange(existing.updatedAt, data.updatedAt)) {
+      this.log.warn({ recordId }, "DELETE ignored: Incoming task is older");
       return;
     }
 
