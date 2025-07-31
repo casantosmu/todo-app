@@ -24,10 +24,22 @@ func (app *application) syncHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	nextTimestamp := time.Now().UTC()
+
+	err = app.models.Task.ApplyChanges(request.Changes.Tasks, nextTimestamp)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
+	taskChanges, err := app.models.Task.GetChangesAfter(request.LastTimestamp)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
 	response := data.SyncResponse{
-		NextTimestamp: time.Now(),
+		NextTimestamp: nextTimestamp,
 		Changes: data.SyncChanges{
-			Tasks: make([]data.Task, 0),
+			Tasks: taskChanges,
 		},
 	}
 

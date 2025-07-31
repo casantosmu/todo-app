@@ -62,7 +62,7 @@ func NewTaskModel(db *sql.DB) (*TaskModel, error) {
 }
 
 func (m *TaskModel) GetChangesAfter(lastTimestamp time.Time) ([]Task, error) {
-	var tasks []Task
+	tasks := []Task{}
 
 	rows, err := m.stmtGetChanges.Query(lastTimestamp)
 	if err != nil {
@@ -105,7 +105,11 @@ func (m *TaskModel) GetChangesAfter(lastTimestamp time.Time) ([]Task, error) {
 	return tasks, nil
 }
 
-func (m *TaskModel) ApplyChanges(tasks []Task, syncedAt time.Time) error {
+func (m *TaskModel) ApplyChanges(tasks []Task, nextTimestamp time.Time) error {
+	if len(tasks) == 0 {
+		return nil
+	}
+
 	tx, err := m.DB.Begin()
 	if err != nil {
 		return err
@@ -132,7 +136,7 @@ func (m *TaskModel) ApplyChanges(tasks []Task, syncedAt time.Time) error {
 			task.CreatedAt,
 			task.UpdatedAt,
 			deletedAt,
-			syncedAt,
+			nextTimestamp,
 		)
 
 		if err != nil {
