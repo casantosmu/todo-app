@@ -7,16 +7,6 @@ import (
 	"github.com/casantosmu/todo-app/internal/validator"
 )
 
-type Task struct {
-	ID          string     `json:"id"`
-	Title       string     `json:"title"`
-	CompletedAt *time.Time `json:"completedAt"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	UpdatedAt   time.Time  `json:"updatedAt"`
-	DeletedAt   *time.Time `json:"deletedAt"`
-	SyncedAt    string     `json:"-"`
-}
-
 type SyncChanges struct {
 	Tasks []Task `json:"tasks"`
 }

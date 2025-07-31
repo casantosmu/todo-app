@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/casantosmu/todo-app/internal/data"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -19,6 +20,7 @@ import (
 
 type application struct {
 	logger *slog.Logger
+	models *data.Models
 }
 
 func main() {
@@ -50,7 +52,13 @@ func main() {
 
 	logger.Info("database migrations applied")
 
-	app := &application{logger}
+	models, err := data.NewModels(db)
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
+	app := &application{logger, models}
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),
