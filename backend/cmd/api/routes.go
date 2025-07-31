@@ -14,5 +14,5 @@ func (app *application) routes() http.Handler {
 
 	router.HandlerFunc(http.MethodPost, "/api/sync", app.syncHandler)
 
-	return app.recoverPanic(router)
+	return app.recoverPanic(app.enableCORS(router))
 }
