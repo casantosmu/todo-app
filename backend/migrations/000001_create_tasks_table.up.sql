@@ -7,3 +7,5 @@ CREATE TABLE tasks (
   deleted_at DATETIME,
   synced_at DATETIME NOT NULL
 );
+
+CREATE INDEX idx_tasks_synced_at ON tasks(synced_at);
