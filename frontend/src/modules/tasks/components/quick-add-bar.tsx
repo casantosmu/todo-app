@@ -15,7 +15,9 @@ export const QuickAddBar = () => {
       return;
     }
 
-    mutate(title, {
+    const data = { title };
+
+    mutate(data, {
       onSuccess: () => {
         if (inputRef.current) {
           inputRef.current.value = "";

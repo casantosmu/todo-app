@@ -41,7 +41,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
   const handleSave = async () => {
     const title = inputRef.current?.value.trim();
     if (title && title !== task.title) {
-      await updateTask({ taskId: task.id, title });
+      await updateTask({ ...task, title });
     }
     setIsEditing(false);
   };
@@ -114,7 +114,7 @@ export const TaskItem = ({ task }: TaskItemProps) => {
             aria-label={`Delete task "${task.title}"`}
             className="text-muted-foreground hover:text-destructive opacity-0 transition-all duration-150 group-hover:opacity-100"
             onClick={() => {
-              deleteTask(task.id);
+              deleteTask(task);
             }}
           >
             <Trash2 className="h-5 w-5" />

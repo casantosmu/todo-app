@@ -1,32 +1,60 @@
 import { getConfig } from "@/lib/config";
-import { db } from "@/lib/db";
-import type { SyncChange } from "../models/sync-change";
+import { db, dbAllTables } from "@/lib/db";
+import { eventEmitter } from "@/lib/event-emitter";
+
+type SyncChanges = Record<string, Record<string, unknown>[]>;
+
+interface SyncResponseBody {
+  nextTimestamp: string;
+  changes: SyncChanges;
+}
 
 export const syncService = {
   async sync() {
     try {
       await this._syncWithLock(async () => {
         const metadata = await this._getMetadata();
-        const changes = await db.syncLogs
-          .where("id")
-          .above(metadata.lastSyncToken)
+        const syncLogs = await db.syncLogs
+          .where("timestamp")
+          .above(metadata.lastTimestamp)
           .toArray();
 
-        if (!changes.length) {
-          return;
+        const changes: SyncChanges = {};
+        for (const syncLog of syncLogs) {
+          changes[syncLog.tableName] ??= [];
+          changes[syncLog.tableName].push(syncLog.data);
         }
 
-        const success = await this._sendToBackend(
-          metadata.lastSyncToken,
-          changes,
-        );
+        const baseUrl = (await getConfig()).syncServiceUrl;
+        const response = await fetch(`${baseUrl}/sync`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            lastTimestamp: metadata.lastTimestamp,
+            changes,
+          }),
+        });
 
-        if (success) {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.statusText}`);
+        }
+
+        const body = (await response.json()) as SyncResponseBody;
+
+        await db.transaction("rw", dbAllTables, async () => {
+          for (const [tableName, data] of Object.entries(body.changes)) {
+            if (data.length > 0) {
+              await eventEmitter.emit("sync:pull", { tableName, data });
+            }
+          }
+
           await db.syncMetadata.put({
             ...metadata,
-            lastSyncToken: changes[changes.length - 1].id,
+            lastTimestamp: body.nextTimestamp,
           });
-        }
+        });
       });
     } catch (error) {
       console.error("Sync failed:", error);
@@ -37,40 +65,13 @@ export const syncService = {
     await navigator.locks.request("SYNC_LOCK", { ifAvailable: false }, fn);
   },
 
-  async _sendToBackend(lastSyncToken: number, changes: SyncChange[]) {
-    try {
-      const baseUrl = (await getConfig()).syncServiceUrl;
-      const response = await fetch(`${baseUrl}/sync`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ lastSyncToken, changes }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.statusText}`);
-      }
-
-      console.log("_sendToBackend", {
-        body: { lastSyncToken, changes },
-        response: (await response.json()) as unknown,
-      });
-
-      return true;
-    } catch (error) {
-      console.error("Failed to send changes to backend:", error);
-      return false;
-    }
-  },
-
   async _getMetadata() {
     let metadata = await db.syncMetadata.get("sync_metadata");
 
     if (!metadata) {
       metadata = {
         id: "sync_metadata",
-        lastSyncToken: 0,
+        lastTimestamp: new Date(0).toISOString(),
       };
       await db.syncMetadata.put(metadata);
     }
