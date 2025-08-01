@@ -1,4 +1,5 @@
-import { db, withSync } from "@/lib/db";
+import { db, withSyncTables } from "@/lib/db";
+import { eventEmitter } from "@/lib/event-emitter";
 import Dexie from "dexie";
 import { DELETED_STATUS, TASK_STATUS, type Task } from "../models/task";
 
@@ -16,7 +17,13 @@ export const taskService = {
       deletedAt: null,
     };
 
-    await withSync(db.tasks, newTask);
+    await db.transaction("rw", withSyncTables(db.tasks), async () => {
+      await db.tasks.add(newTask);
+      await eventEmitter.emit("sync:push", {
+        tableName: db.tasks.name,
+        data: [newTask],
+      });
+    });
   },
 
   getPendingTasks() {
@@ -60,29 +67,53 @@ export const taskService = {
     const now = new Date();
     const isCompleted = task.isCompleted;
 
-    await withSync(db.tasks, {
+    const updatedTask: Task = {
       ...task,
       isCompleted: isCompleted ? TASK_STATUS.PENDING : TASK_STATUS.COMPLETED,
       completedAt: isCompleted ? null : now,
       updatedAt: now,
+    };
+
+    await db.transaction("rw", withSyncTables(db.tasks), async () => {
+      await db.tasks.put(updatedTask);
+      await eventEmitter.emit("sync:push", {
+        tableName: db.tasks.name,
+        data: [updatedTask],
+      });
     });
   },
 
   async deleteTask(task: Task) {
     const now = new Date();
 
-    await withSync(db.tasks, {
+    const updatedTask: Task = {
       ...task,
       isDeleted: DELETED_STATUS.DELETED,
       deletedAt: now,
       updatedAt: now,
+    };
+
+    await db.transaction("rw", withSyncTables(db.tasks), async () => {
+      await db.tasks.put(updatedTask);
+      await eventEmitter.emit("sync:push", {
+        tableName: db.tasks.name,
+        data: [updatedTask],
+      });
     });
   },
 
   async updateTask(task: Task) {
-    await withSync(db.tasks, {
+    const updatedTask: Task = {
       ...task,
       updatedAt: new Date(),
+    };
+
+    await db.transaction("rw", withSyncTables(db.tasks), async () => {
+      await db.tasks.put(updatedTask);
+      await eventEmitter.emit("sync:push", {
+        tableName: db.tasks.name,
+        data: [updatedTask],
+      });
     });
   },
 };

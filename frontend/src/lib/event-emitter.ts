@@ -1,4 +1,8 @@
 interface AppEvents {
+  "sync:push": {
+    tableName: string;
+    data: unknown[];
+  };
   "sync:pull": {
     tableName: string;
     data: unknown[];

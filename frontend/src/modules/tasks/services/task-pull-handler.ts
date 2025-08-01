@@ -30,18 +30,19 @@ const toTask = (apiTask: ApiTask): Task => {
   };
 };
 
-export const taskSyncHandler = {
+export const taskPullHandler = {
   init() {
     eventEmitter.on("sync:pull", async ({ tableName, data }) => {
       if (tableName !== db.tasks.name) {
         return;
       }
 
-      const apiTasks = data as ApiTask[];
+      const apiTasks = data;
       if (apiTasks.length === 0) {
         return;
       }
 
+      // @ts-expect-error validate data
       const tasks = apiTasks.map(toTask);
 
       await db.tasks.bulkPut(tasks);

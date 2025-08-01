@@ -4,7 +4,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import { queryClient } from "./lib/react-query";
 import { syncPollingService } from "./modules/sync/services/sync-polling-service";
-import { taskSyncHandler } from "./modules/tasks/services/task-sync-handler";
+import { syncPushHandler } from "./modules/sync/services/sync-push-handler";
+import { taskPullHandler } from "./modules/tasks/services/task-pull-handler";
 import { ThemeProvider } from "./providers/ThemeProvider";
 
 import "@fontsource/inter/400.css";
@@ -16,7 +17,8 @@ if (!rootElement) {
 }
 
 syncPollingService.init();
-taskSyncHandler.init();
+syncPushHandler.init();
+taskPullHandler.init();
 
 createRoot(rootElement).render(
   <StrictMode>

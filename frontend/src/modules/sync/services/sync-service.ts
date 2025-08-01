@@ -1,8 +1,8 @@
 import { getConfig } from "@/lib/config";
-import { db, dbAllTables } from "@/lib/db";
+import { db, withAllTables } from "@/lib/db";
 import { eventEmitter } from "@/lib/event-emitter";
 
-type SyncChanges = Record<string, Record<string, unknown>[]>;
+type SyncChanges = Record<string, unknown[]>;
 
 interface SyncResponseBody {
   nextTimestamp: string;
@@ -43,7 +43,7 @@ export const syncService = {
 
         const body = (await response.json()) as SyncResponseBody;
 
-        await db.transaction("rw", dbAllTables, async () => {
+        await db.transaction("rw", withAllTables(), async () => {
           for (const [tableName, data] of Object.entries(body.changes)) {
             if (data.length > 0) {
               await eventEmitter.emit("sync:pull", { tableName, data });
