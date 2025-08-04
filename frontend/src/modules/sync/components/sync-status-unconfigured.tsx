@@ -1,7 +1,10 @@
+import { useAuth } from "@/providers/auth-provider/context";
 import { CloudOff, LogIn } from "lucide-react";
 import { SyncStatusBase } from "./sync-status-base";
 
 export const SyncStatusUnconfigured = () => {
+  const { openAuthDialog } = useAuth();
+
   return (
     <SyncStatusBase
       trigger={{
@@ -15,9 +18,7 @@ export const SyncStatusUnconfigured = () => {
         action: {
           label: "Turn on sync",
           icon: <LogIn className="h-4 w-4" />,
-          onSelect: () => {
-            /* TODO: Implement login/signup flow */
-          },
+          onSelect: openAuthDialog,
         },
       }}
     />

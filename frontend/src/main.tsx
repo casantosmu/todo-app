@@ -6,7 +6,8 @@ import { queryClient } from "./lib/react-query";
 import { syncPollingService } from "./modules/sync/services/sync-polling-service";
 import { syncPushHandler } from "./modules/sync/services/sync-push-handler";
 import { taskPullHandler } from "./modules/tasks/services/task-pull-handler";
-import { ThemeProvider } from "./providers/ThemeProvider";
+import { AuthProvider } from "./providers/auth-provider";
+import { ThemeProvider } from "./providers/theme-provider";
 
 import "@fontsource/inter/400.css";
 import "./index.css";
@@ -24,7 +25,9 @@ createRoot(rootElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>,
