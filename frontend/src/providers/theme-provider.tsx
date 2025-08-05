@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type PropsWithChildren } from "react";
 import { ThemeContext, themes, type Theme } from "./theme-provider-context";
 
-const STORAGE_KEY = "ui-theme";
+const THEME_STORAGE_KEY = "ui-theme";
 
 const isTheme = (value: unknown): value is Theme => {
   return typeof value === "string" && themes.includes(value as Theme);
@@ -9,7 +9,7 @@ const isTheme = (value: unknown): value is Theme => {
 
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    const storedTheme = localStorage.getItem(STORAGE_KEY);
+    const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
 
     if (isTheme(storedTheme)) {
       return storedTheme;
@@ -40,7 +40,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
     () => ({
       theme,
       setTheme: (theme: Theme) => {
-        localStorage.setItem(STORAGE_KEY, theme);
+        localStorage.setItem(THEME_STORAGE_KEY, theme);
         setTheme(theme);
       },
     }),
