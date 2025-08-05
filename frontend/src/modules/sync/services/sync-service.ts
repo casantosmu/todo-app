@@ -49,7 +49,6 @@ export const syncService = {
         });
 
         syncMetadataService.set({
-          ...metadata,
           lastTimestamp: resBody.nextTimestamp,
         });
       });

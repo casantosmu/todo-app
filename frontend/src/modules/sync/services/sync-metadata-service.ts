@@ -11,7 +11,6 @@ export const syncMetadataService = {
     }
 
     return {
-      id: "sync_metadata",
       lastTimestamp: new Date(0).toISOString(),
     };
   },
