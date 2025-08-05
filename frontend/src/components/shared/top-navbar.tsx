@@ -4,24 +4,27 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuPortal,
+  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SyncStatus } from "@/modules/sync/components/sync-status";
+import { useAuth } from "@/modules/sync/providers/auth-provider-context";
 import { useTheme } from "@/providers/theme-provider-context";
-import { Moon, MoreHorizontal, Settings, Sun } from "lucide-react";
+import { LogOut, Moon, MoreHorizontal, Settings, Sun } from "lucide-react";
 
 export const TopNavbar = () => {
   const { setTheme } = useTheme();
+  const { session, logout } = useAuth();
 
   return (
     <header className="flex items-center justify-between">
       <h1 className="text-xl font-bold">TodoApp</h1>
 
       <div className="flex items-center gap-1">
-        <SyncStatus status="unconfigured" />
+        <SyncStatus />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -70,6 +73,15 @@ export const TopNavbar = () => {
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            {session && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

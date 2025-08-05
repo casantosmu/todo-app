@@ -1,12 +1,24 @@
 import type { AuthSession } from "@/modules/sync/models/auth-session";
-import { useMemo, useState, type PropsWithChildren } from "react";
+import { useEffect, useMemo, useState, type PropsWithChildren } from "react";
 import { AuthDialog } from "../components/auth-dialog";
 import { authService } from "../services/auth-service";
+import { syncPollingService } from "../services/sync-polling-service";
 import { AuthContext } from "./auth-provider-context";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [session, setSession] = useState(() => authService.getSession());
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (session) {
+      syncPollingService.init();
+    }
+    return () => {
+      if (session) {
+        syncPollingService.stop("unconfigured");
+      }
+    };
+  }, [session]);
 
   const value = useMemo(
     () => ({
@@ -21,6 +33,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       logout: () => {
         authService.logout();
         setSession(null);
+        syncPollingService.stop("unconfigured");
       },
     }),
     [session],

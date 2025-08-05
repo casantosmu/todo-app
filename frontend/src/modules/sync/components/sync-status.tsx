@@ -1,14 +1,13 @@
+import { useSyncStatus } from "../hooks/use-sync-status";
 import { SyncStatusError } from "./sync-status-error";
 import { SyncStatusOffline } from "./sync-status-offline";
 import { SyncStatusSynced } from "./sync-status-synced";
 import { SyncStatusSyncing } from "./sync-status-syncing";
 import { SyncStatusUnconfigured } from "./sync-status-unconfigured";
 
-interface SyncStatusProps {
-  status: "unconfigured" | "synced" | "syncing" | "offline" | "error";
-}
+export const SyncStatus = () => {
+  const status = useSyncStatus();
 
-export const SyncStatus = ({ status }: SyncStatusProps) => {
   switch (status) {
     case "unconfigured":
       return <SyncStatusUnconfigured />;

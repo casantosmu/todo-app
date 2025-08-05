@@ -47,13 +47,11 @@ export const authService = {
 
   getSession() {
     const sessionStr = localStorage.getItem(SESSION_STORAGE_KEY);
+
     if (!sessionStr) {
       return null;
     }
-    try {
-      return JSON.parse(sessionStr) as AuthSession;
-    } catch {
-      return null;
-    }
+
+    return JSON.parse(sessionStr) as AuthSession;
   },
 };

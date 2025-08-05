@@ -48,12 +48,12 @@ export const syncService = {
           }
         });
 
-        syncMetadataService.set({
-          lastTimestamp: resBody.nextTimestamp,
-        });
+        syncMetadataService.set({ lastTimestamp: resBody.nextTimestamp });
+        await eventEmitter.emit("sync:status-change", { status: "synced" });
       });
     } catch (error) {
       console.error("Sync failed:", error);
+      await eventEmitter.emit("sync:status-change", { status: "error" });
     }
   },
 
