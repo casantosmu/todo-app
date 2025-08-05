@@ -1,8 +1,8 @@
-import { AuthDialog } from "@/modules/auth/components/auth-dialog";
-import type { Session } from "@/modules/auth/models/session";
-import { authService } from "@/modules/auth/services/auth-service";
+import type { AuthSession } from "@/modules/sync/models/auth-session";
 import { useMemo, useState, type PropsWithChildren } from "react";
-import { AuthContext } from "./context";
+import { AuthDialog } from "../components/auth-dialog";
+import { authService } from "../services/auth-service";
+import { AuthContext } from "./auth-provider-context";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [session, setSession] = useState(() => authService.getSession());
@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const value = useMemo(
     () => ({
       session,
-      onLogin: (session: Session) => {
+      onLogin: (session: AuthSession) => {
         setSession(session);
         setIsAuthDialogOpen(false);
       },

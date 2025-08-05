@@ -3,10 +3,10 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { queryClient } from "./lib/react-query";
+import { AuthProvider } from "./modules/sync/providers/auth-provider";
 import { syncPollingService } from "./modules/sync/services/sync-polling-service";
 import { syncPushHandler } from "./modules/sync/services/sync-push-handler";
 import { taskPullHandler } from "./modules/tasks/services/task-pull-handler";
-import { AuthProvider } from "./providers/auth-provider";
 import { ThemeProvider } from "./providers/theme-provider";
 
 import "@fontsource/inter/400.css";

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type PropsWithChildren } from "react";
-import { ThemeContext, themes, type Theme } from "./context";
+import { ThemeContext, themes, type Theme } from "./theme-provider-context";
 
 const STORAGE_KEY = "ui-theme";
 

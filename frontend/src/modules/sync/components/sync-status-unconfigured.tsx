@@ -1,5 +1,5 @@
-import { useAuth } from "@/providers/auth-provider/context";
 import { CloudOff, LogIn } from "lucide-react";
+import { useAuth } from "../providers/auth-provider-context";
 import { SyncStatusBase } from "./sync-status-base";
 
 export const SyncStatusUnconfigured = () => {

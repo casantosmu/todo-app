@@ -1,9 +1,9 @@
-import type { Session } from "@/modules/auth/models/session";
+import type { AuthSession } from "@/modules/sync/models/auth-session";
 import { createContext, use } from "react";
 
 interface AuthProviderState {
-  session: Session | null;
-  onLogin: (session: Session) => void;
+  session: AuthSession | null;
+  onLogin: (session: AuthSession) => void;
   openAuthDialog: () => void;
   logout: () => void;
 }

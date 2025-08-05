@@ -1,5 +1,5 @@
 import { sleep } from "@/lib/utils";
-import type { Session } from "../models/session";
+import type { AuthSession } from "../models/auth-session";
 
 const SESSION_STORAGE_KEY = "auth-session";
 
@@ -11,7 +11,7 @@ export const authService = {
       throw new Error("Password is too short.");
     }
 
-    const session: Session = {
+    const session: AuthSession = {
       user: {
         id: crypto.randomUUID(),
         email: credentials.email,
@@ -30,7 +30,7 @@ export const authService = {
     }
     // In a real app, you'd check if the email is already taken.
 
-    const session: Session = {
+    const session: AuthSession = {
       user: {
         id: crypto.randomUUID(),
         email: credentials.email,
@@ -51,7 +51,7 @@ export const authService = {
       return null;
     }
     try {
-      return JSON.parse(sessionStr) as Session;
+      return JSON.parse(sessionStr) as AuthSession;
     } catch {
       return null;
     }

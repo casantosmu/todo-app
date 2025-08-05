@@ -1,4 +1,4 @@
-import { useAuth } from "@/providers/auth-provider/context";
+import { useAuth } from "@/modules/sync/providers/auth-provider-context";
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "../services/auth-service";
 

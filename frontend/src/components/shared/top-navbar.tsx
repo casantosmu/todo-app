@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SyncStatus } from "@/modules/sync/components/sync-status";
-import { useTheme } from "@/providers/theme-provider/context";
+import { useTheme } from "@/providers/theme-provider-context";
 import { Moon, MoreHorizontal, Settings, Sun } from "lucide-react";
 
 export const TopNavbar = () => {

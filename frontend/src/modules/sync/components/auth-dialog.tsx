@@ -5,8 +5,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { LoginForm } from "./login-form";
-import { SignupForm } from "./signup-form";
+import { LoginForm } from "./auth-login-form";
+import { SignupForm } from "./auth-signup-form";
 
 interface AuthDialogProps {
   isOpen: boolean;
