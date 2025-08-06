@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     if (session) {
       syncPollingService.init();
     }
+
     return () => {
       if (session) {
         syncPollingService.stop("unconfigured");
@@ -33,7 +34,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       logout: () => {
         authService.logout();
         setSession(null);
-        syncPollingService.stop("unconfigured");
       },
     }),
     [session],
