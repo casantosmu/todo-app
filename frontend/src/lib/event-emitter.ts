@@ -11,6 +11,7 @@ export interface AppEvents {
   };
   "sync:status-change": {
     status: SyncStatus;
+    lastTimestamp?: string;
   };
 }
 

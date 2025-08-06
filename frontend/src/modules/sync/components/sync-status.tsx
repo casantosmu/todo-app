@@ -1,4 +1,4 @@
-import { useSyncStatus } from "../hooks/use-sync-status";
+import { useSyncState } from "../hooks/use-sync-state";
 import { SyncStatusError } from "./sync-status-error";
 import { SyncStatusOffline } from "./sync-status-offline";
 import { SyncStatusSynced } from "./sync-status-synced";
@@ -6,7 +6,7 @@ import { SyncStatusSyncing } from "./sync-status-syncing";
 import { SyncStatusUnconfigured } from "./sync-status-unconfigured";
 
 export const SyncStatus = () => {
-  const status = useSyncStatus();
+  const { status, lastTimestamp } = useSyncState();
 
   switch (status) {
     case "unconfigured":
@@ -14,7 +14,7 @@ export const SyncStatus = () => {
     case "syncing":
       return <SyncStatusSyncing />;
     case "synced":
-      return <SyncStatusSynced />;
+      return <SyncStatusSynced lastTimestamp={lastTimestamp} />;
     case "offline":
       return <SyncStatusOffline />;
     case "error":
