@@ -32,11 +32,6 @@ func NewTaskModel(db *sql.DB) (*TaskModel, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer func() {
-		if err != nil {
-			stmtGetChanges.Close()
-		}
-	}()
 
 	const applyChangeQuery = `
 		INSERT INTO tasks (id, title, completed_at, created_at, updated_at, deleted_at, synced_at)
@@ -51,6 +46,7 @@ func NewTaskModel(db *sql.DB) (*TaskModel, error) {
 	`
 	stmtApplyChange, err := db.Prepare(applyChangeQuery)
 	if err != nil {
+		stmtGetChanges.Close()
 		return nil, err
 	}
 
@@ -138,7 +134,6 @@ func (m *TaskModel) ApplyChanges(tasks []Task, nextTimestamp time.Time) error {
 			deletedAt,
 			nextTimestamp,
 		)
-
 		if err != nil {
 			return err
 		}

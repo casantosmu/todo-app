@@ -4,6 +4,7 @@ import "database/sql"
 
 type Models struct {
 	Task *TaskModel
+	User *UserModel
 }
 
 func NewModels(db *sql.DB) (*Models, error) {
@@ -12,7 +13,13 @@ func NewModels(db *sql.DB) (*Models, error) {
 		return nil, err
 	}
 
+	userModel, err := NewUserModel(db)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Models{
 		Task: taskModel,
+		User: userModel,
 	}, nil
 }
