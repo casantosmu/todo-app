@@ -25,8 +25,8 @@ export const syncService = {
           reqBody.changes[syncLog.tableName].push(syncLog.data);
         }
 
-        const baseUrl = (await getConfig()).syncServiceUrl;
-        const response = await fetch(`${baseUrl}/sync`, {
+        const config = await getConfig();
+        const response = await fetch(`${config.syncServiceUrl}/sync`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
