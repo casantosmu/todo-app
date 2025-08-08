@@ -46,12 +46,10 @@ func (p *password) Set(plainPass string) error {
 func (p *password) Matches(plainPass string) (bool, error) {
 	err := bcrypt.CompareHashAndPassword(p.hash, []byte(plainPass))
 	if err != nil {
-		switch {
-		case errors.Is(err, bcrypt.ErrMismatchedHashAndPassword):
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			return false, nil
-		default:
-			return false, err
 		}
+		return false, err
 	}
 	return true, nil
 }
@@ -136,12 +134,10 @@ func (m *UserModel) GetByEmail(email string) (*User, error) {
 	)
 
 	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrRecordNotFound
-		default:
-			return nil, err
 		}
+		return nil, err
 	}
 
 	return &user, nil
