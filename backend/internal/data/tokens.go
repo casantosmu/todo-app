@@ -7,6 +7,8 @@ import (
 	"encoding/base32"
 	"encoding/hex"
 	"time"
+
+	"github.com/casantosmu/todo-app/internal/validator"
 )
 
 const (
@@ -44,6 +46,11 @@ func generateToken(userID string, ttl time.Duration, scope string) (*Token, erro
 	token.Hash = hex.EncodeToString(hash[:])
 
 	return token, nil
+}
+
+func ValidateTokenPlaintext(v *validator.Validator, tokenPlaintext string) {
+	v.Check(tokenPlaintext != "", "token", "must be provided")
+	v.Check(len(tokenPlaintext) == 26, "token", "must be 26 bytes long")
 }
 
 type TokenModel struct {

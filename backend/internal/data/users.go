@@ -1,7 +1,9 @@
 package data
 
 import (
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"errors"
 	"regexp"
 	"strings"
@@ -20,12 +22,18 @@ var (
 	ErrRecordNotFound = errors.New("record not found")
 )
 
+var AnonymousUser = &User{}
+
 type User struct {
 	ID        string    `json:"id"`
 	Email     string    `json:"email"`
 	Password  password  `json:"-"`
 	UpdatedAt time.Time `json:"updated_at"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+func (u *User) IsAnonymous() bool {
+	return u == AnonymousUser
 }
 
 type password struct {
@@ -55,10 +63,11 @@ func (p *password) Matches(plainPass string) (bool, error) {
 }
 
 type UserModel struct {
-	DB             *sql.DB
-	stmtInsert     *sql.Stmt
-	stmtGetByEmail *sql.Stmt
-	stmtExists     *sql.Stmt
+	DB              *sql.DB
+	stmtInsert      *sql.Stmt
+	stmtGetByEmail  *sql.Stmt
+	stmtExists      *sql.Stmt
+	stmtGetForToken *sql.Stmt
 }
 
 func NewUserModel(db *sql.DB) (*UserModel, error) {
@@ -92,11 +101,28 @@ func NewUserModel(db *sql.DB) (*UserModel, error) {
 		return nil, err
 	}
 
+	const getForTokenQuery = `
+		SELECT u.id, u.email, u.password_hash, u.created_at, u.updated_at
+		FROM users u
+		INNER JOIN tokens t ON u.id = t.user_id
+		WHERE t.hash = ?
+		  AND t.scope = ?
+		  AND t.expires_at > ?`
+
+	stmtGetForToken, err := db.Prepare(getForTokenQuery)
+	if err != nil {
+		stmtInsert.Close()
+		stmtGetByEmail.Close()
+		stmtExists.Close()
+		return nil, err
+	}
+
 	return &UserModel{
-		DB:             db,
-		stmtInsert:     stmtInsert,
-		stmtGetByEmail: stmtGetByEmail,
-		stmtExists:     stmtExists,
+		DB:              db,
+		stmtInsert:      stmtInsert,
+		stmtGetByEmail:  stmtGetByEmail,
+		stmtExists:      stmtExists,
+		stmtGetForToken: stmtGetForToken,
 	}, nil
 }
 
@@ -152,6 +178,30 @@ func (m *UserModel) ExistsByEmail(email string) (bool, error) {
 	}
 
 	return exists, nil
+}
+
+func (m *UserModel) GetForToken(scope, tokenPlaintext string) (*User, error) {
+	hash := sha256.Sum256([]byte(tokenPlaintext))
+	tokenHash := hex.EncodeToString(hash[:])
+
+	var user User
+
+	err := m.stmtGetForToken.QueryRow(tokenHash, scope, time.Now()).Scan(
+		&user.ID,
+		&user.Email,
+		&user.Password.hash,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrRecordNotFound
+		}
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func ValidateEmail(v *validator.Validator, email string) {
