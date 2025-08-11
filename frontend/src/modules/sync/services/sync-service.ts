@@ -3,6 +3,7 @@ import { db, withAllTables } from "@/lib/db";
 import { eventEmitter } from "@/lib/event-emitter";
 import type { SyncRequest } from "../models/sync-request";
 import type { SyncResponse } from "../models/sync-response";
+import { authService } from "./auth-service";
 import { syncMetadataService } from "./sync-metadata-service";
 
 export const syncService = {
@@ -26,11 +27,20 @@ export const syncService = {
         }
 
         const config = await getConfig();
+
+        const session = authService.getSession();
+        if (!session?.token) {
+          throw new Error("User not authenticated, cannot sync.");
+        }
+
+        const headers: HeadersInit = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.token}`,
+        };
+
         const response = await fetch(`${config.syncServiceUrl}/sync`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers,
           body: JSON.stringify(reqBody),
         });
 

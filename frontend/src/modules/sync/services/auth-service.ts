@@ -1,33 +1,55 @@
 import { getConfig } from "@/lib/config";
 import { errorFromResponse, ValidationError } from "@/lib/errors";
-import { sleep } from "@/lib/utils";
 import type { AuthLogin } from "../models/auth-login";
 import type { AuthSession } from "../models/auth-session";
 import type { AuthSignup } from "../models/auth-signup";
-import type { AuthUser } from "../models/auth-user";
+import type { AuthTokenResponse } from "../models/auth-token-response";
 
 const SESSION_STORAGE_KEY = "auth-session";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const authService = {
   async login(credentials: AuthLogin) {
-    await sleep(500); // Simulate network latency
+    const { email, password } = credentials;
+    const errors: Record<string, string> = {};
 
-    if (credentials.password.length < 6) {
-      throw new Error("Password is too short.");
+    if (!email) {
+      errors.email = "Email is required.";
+    } else if (!EMAIL_REGEX.test(email)) {
+      errors.email = "Please enter a valid email address.";
     }
 
-    const now = new Date().toISOString();
+    if (!password) {
+      errors.password = "Password is required.";
+    } else if (password.length < 8) {
+      errors.password = "Password must be at least 8 characters long.";
+    }
 
-    const session: AuthSession = {
-      user: {
-        id: crypto.randomUUID(),
-        email: credentials.email,
-        updatedAt: now,
-        createdAt: now,
+    if (Object.keys(errors).length > 0) {
+      throw new ValidationError(errors);
+    }
+
+    const config = await getConfig();
+
+    const response = await fetch(
+      `${config.syncServiceUrl}/tokens/authentication`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
       },
-    };
+    );
 
+    if (!response.ok) {
+      const error = await errorFromResponse(response);
+      throw error;
+    }
+
+    const { token } = (await response.json()) as AuthTokenResponse;
+
+    const session: AuthSession = { token };
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
     return session;
   },
@@ -59,6 +81,7 @@ export const authService = {
     }
 
     const config = await getConfig();
+
     const response = await fetch(`${config.syncServiceUrl}/users`, {
       method: "POST",
       headers: {
@@ -72,9 +95,25 @@ export const authService = {
       throw error;
     }
 
-    const user = (await response.json()) as AuthUser;
+    const tokenResponse = await fetch(
+      `${config.syncServiceUrl}/tokens/authentication`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      },
+    );
 
-    const session: AuthSession = { user };
+    if (!tokenResponse.ok) {
+      const error = await errorFromResponse(tokenResponse);
+      throw error;
+    }
+
+    const { token } = (await tokenResponse.json()) as AuthTokenResponse;
+
+    const session: AuthSession = { token };
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
     return session;
   },
