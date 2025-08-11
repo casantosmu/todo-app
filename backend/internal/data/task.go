@@ -26,8 +26,8 @@ func NewTaskModel(db *sql.DB) (*TaskModel, error) {
 		SELECT id, title, completed_at, created_at, updated_at, deleted_at, synced_at
 		FROM tasks
 		WHERE synced_at > ?
-		ORDER BY synced_at ASC;
-	`
+		ORDER BY synced_at ASC;`
+
 	stmtGetChanges, err := db.Prepare(getChangesQuery)
 	if err != nil {
 		return nil, err
@@ -42,8 +42,8 @@ func NewTaskModel(db *sql.DB) (*TaskModel, error) {
 			updated_at = excluded.updated_at,
 			deleted_at = excluded.deleted_at,
 			synced_at = excluded.synced_at
-		WHERE excluded.updated_at > tasks.updated_at;
-	`
+		WHERE excluded.updated_at > tasks.updated_at;`
+
 	stmtApplyChange, err := db.Prepare(applyChangeQuery)
 	if err != nil {
 		stmtGetChanges.Close()

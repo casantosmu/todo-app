@@ -64,8 +64,8 @@ type UserModel struct {
 func NewUserModel(db *sql.DB) (*UserModel, error) {
 	const insertQuery = `
 		INSERT INTO users (id, email, password_hash, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?)
-	`
+		VALUES (?, ?, ?, ?, ?)`
+
 	stmtInsert, err := db.Prepare(insertQuery)
 	if err != nil {
 		return nil, err
@@ -74,8 +74,8 @@ func NewUserModel(db *sql.DB) (*UserModel, error) {
 	const getByEmailQuery = `
 		SELECT id, email, password_hash, created_at, updated_at
 		FROM users
-		WHERE email = ?
-	`
+		WHERE email = ?`
+
 	stmtGetByEmail, err := db.Prepare(getByEmailQuery)
 	if err != nil {
 		stmtInsert.Close()
@@ -83,8 +83,8 @@ func NewUserModel(db *sql.DB) (*UserModel, error) {
 	}
 
 	const existsQuery = `
-		SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)
-	`
+		SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)`
+
 	stmtExists, err := db.Prepare(existsQuery)
 	if err != nil {
 		stmtInsert.Close()

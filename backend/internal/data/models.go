@@ -3,8 +3,9 @@ package data
 import "database/sql"
 
 type Models struct {
-	Task *TaskModel
-	User *UserModel
+	Task  *TaskModel
+	User  *UserModel
+	Token *TokenModel
 }
 
 func NewModels(db *sql.DB) (*Models, error) {
@@ -18,8 +19,14 @@ func NewModels(db *sql.DB) (*Models, error) {
 		return nil, err
 	}
 
+	tokenModel, err := NewTokenModel(db)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Models{
-		Task: taskModel,
-		User: userModel,
+		Task:  taskModel,
+		User:  userModel,
+		Token: tokenModel,
 	}, nil
 }

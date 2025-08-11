@@ -18,8 +18,9 @@ func (app *application) syncHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := validator.New()
+	data.ValidateSyncRequest(v, &request)
 
-	if data.ValidateSyncRequest(v, &request); !v.Valid() {
+	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
