@@ -1,5 +1,6 @@
 CREATE TABLE tasks (
   id TEXT PRIMARY KEY NOT NULL,
+  user_id TEXT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   completed_at DATETIME,
   created_at DATETIME NOT NULL,

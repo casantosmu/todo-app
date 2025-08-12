@@ -7,6 +7,7 @@ import (
 
 type Task struct {
 	ID          string     `json:"id"`
+	UserID      string     `json:"-"`
 	Title       string     `json:"title"`
 	CompletedAt *time.Time `json:"completedAt"`
 	CreatedAt   time.Time  `json:"createdAt"`
@@ -23,9 +24,9 @@ type TaskModel struct {
 
 func NewTaskModel(db *sql.DB) (*TaskModel, error) {
 	const getChangesQuery = `
-		SELECT id, title, completed_at, created_at, updated_at, deleted_at, synced_at
+		SELECT id, user_id, title, completed_at, created_at, updated_at, deleted_at, synced_at
 		FROM tasks
-		WHERE synced_at > ?
+		WHERE synced_at > ? AND user_id = ?
 		ORDER BY synced_at ASC;`
 
 	stmtGetChanges, err := db.Prepare(getChangesQuery)
@@ -34,15 +35,15 @@ func NewTaskModel(db *sql.DB) (*TaskModel, error) {
 	}
 
 	const applyChangeQuery = `
-		INSERT INTO tasks (id, title, completed_at, created_at, updated_at, deleted_at, synced_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
+		INSERT INTO tasks (id, user_id, title, completed_at, created_at, updated_at, deleted_at, synced_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT (id) DO UPDATE SET
 			title = excluded.title,
 			completed_at = excluded.completed_at,
 			updated_at = excluded.updated_at,
 			deleted_at = excluded.deleted_at,
 			synced_at = excluded.synced_at
-		WHERE excluded.updated_at > tasks.updated_at;`
+		WHERE excluded.updated_at > tasks.updated_at AND tasks.user_id = excluded.user_id;`
 
 	stmtApplyChange, err := db.Prepare(applyChangeQuery)
 	if err != nil {
@@ -57,10 +58,10 @@ func NewTaskModel(db *sql.DB) (*TaskModel, error) {
 	}, nil
 }
 
-func (m *TaskModel) GetChangesAfter(lastTimestamp time.Time) ([]Task, error) {
+func (m *TaskModel) GetChangesAfter(userID string, lastTimestamp time.Time) ([]Task, error) {
 	tasks := []Task{}
 
-	rows, err := m.stmtGetChanges.Query(lastTimestamp)
+	rows, err := m.stmtGetChanges.Query(lastTimestamp, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,6 +74,7 @@ func (m *TaskModel) GetChangesAfter(lastTimestamp time.Time) ([]Task, error) {
 
 		err := rows.Scan(
 			&task.ID,
+			&task.UserID,
 			&task.Title,
 			&completedAt,
 			&task.CreatedAt,
@@ -101,7 +103,7 @@ func (m *TaskModel) GetChangesAfter(lastTimestamp time.Time) ([]Task, error) {
 	return tasks, nil
 }
 
-func (m *TaskModel) ApplyChanges(tasks []Task, nextTimestamp time.Time) error {
+func (m *TaskModel) ApplyChanges(userID string, tasks []Task, nextTimestamp time.Time) error {
 	if len(tasks) == 0 {
 		return nil
 	}
@@ -127,6 +129,7 @@ func (m *TaskModel) ApplyChanges(tasks []Task, nextTimestamp time.Time) error {
 
 		_, err := txStmtApplyChange.Exec(
 			task.ID,
+			userID,
 			task.Title,
 			completedAt,
 			task.CreatedAt,

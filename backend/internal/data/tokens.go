@@ -25,7 +25,7 @@ type Token struct {
 }
 
 func generateToken(userID string, ttl time.Duration, scope string) (*Token, error) {
-	now := time.Now()
+	now := time.Now().UTC()
 
 	token := &Token{
 		UserID:    userID,
