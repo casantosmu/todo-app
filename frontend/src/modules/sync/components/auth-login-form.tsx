@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ValidationError } from "@/lib/errors";
 import { LogIn } from "lucide-react";
-import { useRef, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { useLogin } from "../hooks/use-auth";
 
 interface LoginFormProps {
@@ -13,17 +14,36 @@ export const LoginForm = ({ onSwitchToSignup }: LoginFormProps) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  const { mutate, isPending, error } = useLogin();
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    general: "",
+  });
+
+  const { mutate, isPending } = useLogin();
+
+  const handleError = (error: Error) => {
+    if (error instanceof ValidationError) {
+      setErrors((prev) => ({
+        ...prev,
+        ...error.fields,
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        general: error.message,
+      }));
+    }
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setErrors({ email: "", password: "", general: "" });
 
-    const email = emailRef.current?.value;
-    const password = passwordRef.current?.value;
+    const email = emailRef.current?.value ?? "";
+    const password = passwordRef.current?.value ?? "";
 
-    if (email && password) {
-      mutate({ email, password });
-    }
+    mutate({ email, password }, { onError: handleError });
   };
 
   return (
@@ -37,7 +57,14 @@ export const LoginForm = ({ onSwitchToSignup }: LoginFormProps) => {
           type="email"
           placeholder="email@example.com"
           required
+          aria-invalid={!!errors.email}
+          aria-describedby="email-error-login"
         />
+        {errors.email && (
+          <p id="email-error-login" className="text-destructive text-sm">
+            {errors.email}
+          </p>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="password">Password</Label>
@@ -47,10 +74,19 @@ export const LoginForm = ({ onSwitchToSignup }: LoginFormProps) => {
           name="password"
           type="password"
           required
+          aria-invalid={!!errors.password}
+          aria-describedby="password-error-login"
         />
+        {errors.password && (
+          <p id="password-error-login" className="text-destructive text-sm">
+            {errors.password}
+          </p>
+        )}
       </div>
 
-      {error && <p className="text-destructive text-sm">{error.message}</p>}
+      {errors.general && (
+        <p className="text-destructive text-sm">{errors.general}</p>
+      )}
 
       <div className="flex flex-col gap-2">
         <Button type="submit" disabled={isPending}>
