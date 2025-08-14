@@ -1,13 +1,14 @@
 import { db, withSyncTables } from "@/lib/db";
 import { eventEmitter } from "@/lib/event-emitter";
 import Dexie from "dexie";
+import { v4 as uuid } from "uuid";
 import { DELETED_STATUS, TASK_STATUS, type Task } from "../models/task";
 
 export const taskService = {
   async addTask(data: Pick<Task, "title">) {
     const now = new Date();
     const newTask: Task = {
-      id: crypto.randomUUID(),
+      id: uuid(),
       title: data.title,
       isCompleted: TASK_STATUS.PENDING,
       isDeleted: DELETED_STATUS.NOT_DELETED,
