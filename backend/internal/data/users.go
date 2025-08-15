@@ -243,3 +243,8 @@ func ValidateUser(v *validator.Validator, user *User) {
 		panic("missing password hash for user")
 	}
 }
+
+func ValidateLoginInput(v *validator.Validator, email string, password string) {
+	ValidateEmail(v, email)
+	v.Check(password != "", "password", "must be provided")
+}

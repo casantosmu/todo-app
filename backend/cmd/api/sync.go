@@ -15,16 +15,16 @@ func (app *application) syncHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var request data.SyncRequest
+	var input data.SyncRequest
 
-	err := app.readJSON(w, r, &request)
+	err := app.readJSON(w, r, &input)
 	if err != nil {
 		app.badRequestResponse(w, r, err)
 		return
 	}
 
 	v := validator.New()
-	data.ValidateSyncRequest(v, &request)
+	data.ValidateSyncRequest(v, &input)
 
 	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
@@ -33,12 +33,12 @@ func (app *application) syncHandler(w http.ResponseWriter, r *http.Request) {
 
 	nextTimestamp := time.Now().UTC()
 
-	err = app.models.Task.ApplyChanges(user.ID, request.Changes.Tasks, nextTimestamp)
+	err = app.models.Task.ApplyChanges(user.ID, input.Changes.Tasks, nextTimestamp)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
 
-	taskChanges, err := app.models.Task.GetChangesAfter(user.ID, request.LastTimestamp)
+	taskChanges, err := app.models.Task.GetChangesAfter(user.ID, input.LastTimestamp)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
