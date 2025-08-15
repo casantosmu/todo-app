@@ -19,6 +19,9 @@ export const useAddTask = () => {
     onSuccess: () => {
       return queryClient.invalidateQueries({ queryKey: TASK_QUERY_KEY });
     },
+    onError: (error: unknown, data: Pick<Task, "title">) => {
+      console.error("Error adding task:", error, "Data:", data);
+    },
   });
 };
 
@@ -29,6 +32,9 @@ export const useToggleTaskStatus = () => {
     mutationFn: (task: Task) => taskService.toggleTaskStatus(task),
     onSuccess: () => {
       return queryClient.invalidateQueries({ queryKey: TASK_QUERY_KEY });
+    },
+    onError: (error: unknown, task: Task) => {
+      console.error(`Error toggling task status for ${task.id}:`, error);
     },
   });
 };
@@ -41,6 +47,9 @@ export const useDeleteTask = () => {
     onSuccess: () => {
       return queryClient.invalidateQueries({ queryKey: TASK_QUERY_KEY });
     },
+    onError: (error: unknown, task: Task) => {
+      console.error(`Error deleting task ${task.id}:`, error);
+    },
   });
 };
 
@@ -51,6 +60,9 @@ export const useUpdateTask = () => {
     mutationFn: (task: Task) => taskService.updateTask(task),
     onSuccess: () => {
       return queryClient.invalidateQueries({ queryKey: TASK_QUERY_KEY });
+    },
+    onError: (error: unknown, task: Task) => {
+      console.error(`Error updating task ${task.id}:`, error);
     },
   });
 };
