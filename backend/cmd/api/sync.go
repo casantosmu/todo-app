@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/casantosmu/todo-app/internal/data"
+	"github.com/casantosmu/todo-app/internal/dto"
 	"github.com/casantosmu/todo-app/internal/validator"
 )
 
@@ -15,7 +15,7 @@ func (app *application) syncHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var input data.SyncRequest
+	var input dto.SyncRequest
 
 	err := app.readJSON(w, r, &input)
 	if err != nil {
@@ -24,7 +24,7 @@ func (app *application) syncHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := validator.New()
-	data.ValidateSyncRequest(v, &input)
+	dto.ValidateSyncRequest(v, &input)
 
 	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
@@ -43,9 +43,9 @@ func (app *application) syncHandler(w http.ResponseWriter, r *http.Request) {
 		app.serverErrorResponse(w, r, err)
 	}
 
-	response := data.SyncResponse{
+	response := dto.SyncResponse{
 		NextTimestamp: nextTimestamp,
-		Changes: data.SyncChanges{
+		Changes: dto.SyncChanges{
 			Tasks: taskChanges,
 		},
 	}

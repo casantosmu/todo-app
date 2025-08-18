@@ -6,14 +6,12 @@ import (
 	"time"
 
 	"github.com/casantosmu/todo-app/internal/data"
+	"github.com/casantosmu/todo-app/internal/dto"
 	"github.com/casantosmu/todo-app/internal/validator"
 )
 
 func (app *application) createAuthenticationTokenHandler(w http.ResponseWriter, r *http.Request) {
-	var input struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
+	var input dto.LoginInput
 
 	err := app.readJSON(w, r, &input)
 	if err != nil {
@@ -22,7 +20,7 @@ func (app *application) createAuthenticationTokenHandler(w http.ResponseWriter, 
 	}
 
 	v := validator.New()
-	data.ValidateLoginInput(v, input.Email, input.Password)
+	dto.ValidateLoginInput(v, &input)
 
 	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)

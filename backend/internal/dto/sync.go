@@ -1,14 +1,15 @@
-package data
+package dto
 
 import (
 	"fmt"
 	"time"
 
+	"github.com/casantosmu/todo-app/internal/data"
 	"github.com/casantosmu/todo-app/internal/validator"
 )
 
 type SyncChanges struct {
-	Tasks []Task `json:"tasks"`
+	Tasks []data.Task `json:"tasks"`
 }
 
 type SyncRequest struct {

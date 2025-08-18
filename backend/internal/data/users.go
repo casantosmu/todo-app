@@ -5,19 +5,14 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
-	"regexp"
 	"strings"
 	"time"
-
-	"github.com/casantosmu/todo-app/internal/validator"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var (
-	domainRegex = regexp.MustCompile(`^[a-zA-Z0-9.-]+$`)
-
 	ErrDuplicateEmail = errors.New("duplicate email")
 	ErrRecordNotFound = errors.New("record not found")
 )
@@ -202,49 +197,4 @@ func (m *UserModel) GetForToken(scope, tokenPlaintext string) (*User, error) {
 	}
 
 	return &user, nil
-}
-
-func ValidateEmail(v *validator.Validator, email string) {
-	v.Check(email != "", "email", "must be provided")
-	v.Check(!strings.ContainsAny(email, "`'\"\\x00"), "email", "contains dangerous characters")
-	v.Check(len(email) <= 254, "email", "must not be more than 254 bytes long")
-
-	parts := strings.SplitN(email, "@", 2)
-
-	v.Check(len(parts) == 2, "email", "must be in the format user@domain")
-	if len(parts) != 2 {
-		return
-	}
-
-	localPart := parts[0]
-	domainPart := parts[1]
-
-	v.Check(len(localPart) > 0, "email", "must have a local part")
-	v.Check(len(localPart) <= 63, "email", "local part must not be more than 63 bytes long")
-
-	v.Check(len(domainPart) > 0, "email", "must have a domain part")
-	v.Check(domainRegex.MatchString(domainPart), "email", "domain part contains invalid characters")
-}
-
-func ValidatePasswordPlaintext(v *validator.Validator, password string) {
-	v.Check(password != "", "password", "must be provided")
-	v.Check(len(password) >= 8, "password", "must be at least 8 bytes long")
-	v.Check(len(password) <= 72, "password", "must not be more than 72 bytes long")
-}
-
-func ValidateUser(v *validator.Validator, user *User) {
-	ValidateEmail(v, user.Email)
-
-	if user.Password.plaintext != nil {
-		ValidatePasswordPlaintext(v, *user.Password.plaintext)
-	}
-
-	if user.Password.hash == nil {
-		panic("missing password hash for user")
-	}
-}
-
-func ValidateLoginInput(v *validator.Validator, email string, password string) {
-	ValidateEmail(v, email)
-	v.Check(password != "", "password", "must be provided")
 }

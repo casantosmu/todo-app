@@ -5,18 +5,24 @@ import (
 	"net/http"
 
 	"github.com/casantosmu/todo-app/internal/data"
+	"github.com/casantosmu/todo-app/internal/dto"
 	"github.com/casantosmu/todo-app/internal/validator"
 )
 
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
-	var input struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
+	var input dto.SignupInput
 
 	err := app.readJSON(w, r, &input)
 	if err != nil {
 		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	v := validator.New()
+	dto.ValidateSignupInput(v, &input)
+
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
 
@@ -27,14 +33,6 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 	err = user.Password.Set(input.Password)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
-		return
-	}
-
-	v := validator.New()
-	data.ValidateUser(v, user)
-
-	if !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
 
