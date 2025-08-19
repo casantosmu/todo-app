@@ -110,7 +110,25 @@ export const authService = {
     return session;
   },
 
-  logout() {
+  async logout() {
+    const config = await getConfig();
+
+    const session = this.getSession();
+    if (!session?.token) {
+      throw new Error("User not authenticated, cannot logout.");
+    }
+
+    const response = await fetch(`${config.syncServiceUrl}/auth/logout`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session.token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.statusText}`);
+    }
+
     localStorage.removeItem(SESSION_STORAGE_KEY);
   },
 

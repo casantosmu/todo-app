@@ -57,7 +57,8 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		token := headerParts[1]
 
 		v := validator.New()
-		data.ValidateTokenPlaintext(v, token)
+		v.Check(token != "", "token", "must be provided")
+		v.Check(len(token) == 26, "token", "must be 26 bytes long")
 
 		if !v.Valid() {
 			app.invalidAuthenticationTokenResponse(w, r)
@@ -74,7 +75,9 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 			return
 		}
 
+		r = app.contextSetToken(r, token)
 		r = app.contextSetUser(r, user)
+
 		next.ServeHTTP(w, r)
 	})
 }

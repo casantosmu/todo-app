@@ -1,9 +1,7 @@
 package data
 
 import (
-	"crypto/sha256"
 	"database/sql"
-	"encoding/hex"
 	"errors"
 	"strings"
 	"time"
@@ -176,8 +174,7 @@ func (m *UserModel) ExistsByEmail(email string) (bool, error) {
 }
 
 func (m *UserModel) GetForToken(scope, tokenPlaintext string) (*User, error) {
-	hash := sha256.Sum256([]byte(tokenPlaintext))
-	tokenHash := hex.EncodeToString(hash[:])
+	tokenHash := generateTokenHash(tokenPlaintext)
 
 	var user User
 

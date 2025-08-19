@@ -25,6 +25,7 @@ func (app *application) routes() (http.Handler, error) {
 	router.HandlerFunc(http.MethodPost, "/api/sync", app.syncHandler)
 	router.HandlerFunc(http.MethodPost, "/api/auth/register", app.registerHandler)
 	router.HandlerFunc(http.MethodPost, "/api/auth/login", app.loginHandler)
+	router.HandlerFunc(http.MethodPost, "/api/auth/logout", app.logoutHandler)
 
 	return app.recoverPanic(app.enableCORS(app.authenticate(router))), nil
 }

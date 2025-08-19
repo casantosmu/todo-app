@@ -104,3 +104,21 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 		app.serverErrorResponse(w, r, err)
 	}
 }
+
+func (app *application) logoutHandler(w http.ResponseWriter, r *http.Request) {
+	user := app.contextGetUser(r)
+	if user.IsAnonymous() {
+		app.authenticationRequiredResponse(w, r)
+		return
+	}
+
+	token := app.contextGetToken(r)
+
+	err := app.models.Token.Delete(token)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}

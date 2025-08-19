@@ -7,8 +7,6 @@ import (
 	"encoding/base32"
 	"encoding/hex"
 	"time"
-
-	"github.com/casantosmu/todo-app/internal/validator"
 )
 
 const (
@@ -41,21 +39,20 @@ func generateToken(userID string, ttl time.Duration, scope string) (*Token, erro
 	}
 
 	token.Plaintext = base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(randomBytes)
-
-	hash := sha256.Sum256([]byte(token.Plaintext))
-	token.Hash = hex.EncodeToString(hash[:])
+	token.Hash = generateTokenHash(token.Plaintext)
 
 	return token, nil
 }
 
-func ValidateTokenPlaintext(v *validator.Validator, tokenPlaintext string) {
-	v.Check(tokenPlaintext != "", "token", "must be provided")
-	v.Check(len(tokenPlaintext) == 26, "token", "must be 26 bytes long")
+func generateTokenHash(tokenPlaintext string) string {
+	hash := sha256.Sum256([]byte(tokenPlaintext))
+	return hex.EncodeToString(hash[:])
 }
 
 type TokenModel struct {
 	DB         *sql.DB
 	stmtInsert *sql.Stmt
+	stmtDelete *sql.Stmt
 }
 
 func NewTokenModel(db *sql.DB) (*TokenModel, error) {
@@ -68,9 +65,20 @@ func NewTokenModel(db *sql.DB) (*TokenModel, error) {
 		return nil, err
 	}
 
+	const deleteQuery = `
+		DELETE FROM tokens
+		WHERE hash = ?`
+
+	stmtDelete, err := db.Prepare(deleteQuery)
+	if err != nil {
+		stmtInsert.Close()
+		return nil, err
+	}
+
 	return &TokenModel{
 		DB:         db,
 		stmtInsert: stmtInsert,
+		stmtDelete: stmtDelete,
 	}, nil
 }
 
@@ -97,4 +105,10 @@ func (m *TokenModel) New(userID string, ttl time.Duration, scope string) (*Token
 	}
 
 	return token, nil
+}
+
+func (m *TokenModel) Delete(tokenPlaintext string) error {
+	tokenHash := generateTokenHash(tokenPlaintext)
+	_, err := m.stmtDelete.Exec(tokenHash)
+	return err
 }

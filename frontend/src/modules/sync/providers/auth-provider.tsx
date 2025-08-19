@@ -32,8 +32,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         setIsAuthDialogOpen(true);
       },
       logout: () => {
-        authService.logout();
-        setSession(null);
+        authService
+          .logout()
+          .then(() => {
+            setSession(null);
+          })
+          .catch((error: unknown) => {
+            console.error("Error during logout:", error);
+          });
       },
     }),
     [session],
