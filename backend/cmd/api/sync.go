@@ -11,7 +11,7 @@ import (
 func (app *application) syncHandler(w http.ResponseWriter, r *http.Request) {
 	user := app.contextGetUser(r)
 	if user.IsAnonymous() {
-		app.invalidAuthenticationTokenResponse(w, r)
+		app.authenticationRequiredResponse(w, r)
 		return
 	}
 
