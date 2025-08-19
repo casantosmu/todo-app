@@ -29,16 +29,13 @@ export const authService = {
 
     const config = await getConfig();
 
-    const response = await fetch(
-      `${config.syncServiceUrl}/tokens/authentication`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
+    const response = await fetch(`${config.syncServiceUrl}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(credentials),
+    });
 
     if (!response.ok) {
       const error = await errorFromResponse(response);
@@ -80,7 +77,7 @@ export const authService = {
 
     const config = await getConfig();
 
-    const response = await fetch(`${config.syncServiceUrl}/users`, {
+    const response = await fetch(`${config.syncServiceUrl}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -93,23 +90,20 @@ export const authService = {
       throw error;
     }
 
-    const tokenResponse = await fetch(
-      `${config.syncServiceUrl}/tokens/authentication`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+    const loginResponse = await fetch(`${config.syncServiceUrl}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({ email, password }),
+    });
 
-    if (!tokenResponse.ok) {
-      const error = await errorFromResponse(tokenResponse);
+    if (!loginResponse.ok) {
+      const error = await errorFromResponse(loginResponse);
       throw error;
     }
 
-    const { token } = (await tokenResponse.json()) as AuthTokenResponse;
+    const { token } = (await loginResponse.json()) as AuthTokenResponse;
 
     const session: AuthSession = { token };
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));

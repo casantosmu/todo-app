@@ -23,8 +23,8 @@ func (app *application) routes() (http.Handler, error) {
 	router.MethodNotAllowed = http.HandlerFunc(app.methodNotAllowedResponse)
 
 	router.HandlerFunc(http.MethodPost, "/api/sync", app.syncHandler)
-	router.HandlerFunc(http.MethodPost, "/api/users", app.registerUserHandler)
-	router.HandlerFunc(http.MethodPost, "/api/tokens/authentication", app.createAuthenticationTokenHandler)
+	router.HandlerFunc(http.MethodPost, "/api/auth/register", app.registerHandler)
+	router.HandlerFunc(http.MethodPost, "/api/auth/login", app.loginHandler)
 
 	return app.recoverPanic(app.enableCORS(app.authenticate(router))), nil
 }
