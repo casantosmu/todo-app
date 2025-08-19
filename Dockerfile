@@ -16,7 +16,6 @@ COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
 COPY backend/ ./
-COPY --from=frontend /app/dist ./cmd/api/ui
 
 RUN CGO_ENABLED=1 go build -ldflags='-s' -o ./bin/todo-app ./cmd/api
 
@@ -26,6 +25,7 @@ WORKDIR /app
 RUN apk add --no-cache tzdata
 
 COPY --from=backend /app ./
+COPY --from=frontend /app/dist ./ui
 
 EXPOSE 3000
 

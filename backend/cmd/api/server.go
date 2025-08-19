@@ -13,14 +13,9 @@ import (
 )
 
 func (app *application) serve(port string) error {
-	handler, err := app.routes()
-	if err != nil {
-		return err
-	}
-
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),
-		Handler:      handler,
+		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
@@ -44,7 +39,7 @@ func (app *application) serve(port string) error {
 
 	app.logger.Info("starting server", "address", srv.Addr)
 
-	err = srv.ListenAndServe()
+	err := srv.ListenAndServe()
 	if !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
