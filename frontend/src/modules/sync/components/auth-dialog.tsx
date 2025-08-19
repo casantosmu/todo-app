@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -23,6 +24,11 @@ export const AuthDialog = ({ isOpen, onOpenChange }: AuthDialogProps) => {
           <DialogTitle className="text-2xl font-bold">
             {view === "login" ? "Welcome back" : "Create an account"}
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            {view === "login"
+              ? "Access your account."
+              : "Create a new account."}
+          </DialogDescription>
         </DialogHeader>
         {view === "login" ? (
           <LoginForm
