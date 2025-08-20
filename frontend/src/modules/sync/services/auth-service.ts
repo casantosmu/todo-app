@@ -1,15 +1,14 @@
 import { getConfig } from "@/lib/config";
 import { errorFromResponse, ValidationError } from "@/lib/errors";
-import type { AuthLogin } from "../models/auth-login";
+import type { AuthCredentials } from "../models/auth-credentials";
 import type { AuthSession } from "../models/auth-session";
-import type { AuthSignup } from "../models/auth-signup";
 import type { AuthTokenResponse } from "../models/auth-token-response";
 
 const SESSION_STORAGE_KEY = "auth-session";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const authService = {
-  async login(credentials: AuthLogin) {
+  async login(credentials: AuthCredentials) {
     const { email, password } = credentials;
     const errors: Record<string, string> = {};
 
@@ -49,8 +48,8 @@ export const authService = {
     return session;
   },
 
-  async signup(credentials: AuthSignup) {
-    const { email, password, confirmPassword } = credentials;
+  async signup(credentials: AuthCredentials) {
+    const { email, password } = credentials;
     const errors: Record<string, string> = {};
 
     if (!email) {
@@ -63,12 +62,6 @@ export const authService = {
       errors.password = "Password is required.";
     } else if (password.length < 8) {
       errors.password = "Password must be at least 8 characters long.";
-    }
-
-    if (!confirmPassword) {
-      errors.confirmPassword = "Please confirm your password.";
-    } else if (password !== confirmPassword) {
-      errors.confirmPassword = "Passwords do not match.";
     }
 
     if (Object.keys(errors).length > 0) {
